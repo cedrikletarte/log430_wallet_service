@@ -1,0 +1,40 @@
+services:
+
+  wallet_postgres:
+    image: postgres:17
+    container_name: wallet_postgres
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      POSTGRES_DB: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - wallet_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  wallet_service:
+    build: .
+    container_name: wallet_service
+    depends_on:
+      wallet_postgres:
+        condition: service_healthy
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      GATEWAY_SECRET: ${GATEWAY_SECRET}
+    restart: always
+
+volumes:
+  wallet_postgres_data:
+    name: wallet_postgres_data
