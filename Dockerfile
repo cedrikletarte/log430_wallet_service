@@ -12,5 +12,5 @@ WORKDIR /app
 # Run as root (default)
 COPY --from=build /app/target/wallet_service-0.0.1-SNAPSHOT.jar /app/app.jar
 ENV JAVA_OPTS=""
-EXPOSE 8083
+EXPOSE 8082
 ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]
