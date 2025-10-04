@@ -112,6 +112,7 @@ public class WalletService implements WalletUseCase {
                 });
 
         return WalletSuccess.builder()
+                .id(wallet.getId())
                 .balance(wallet.getBalance())
                 .currency(wallet.getCurrency())
                 .build();

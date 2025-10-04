@@ -11,6 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class WalletSuccess {
 
+    private Long id;
     private BigDecimal balance;
     private String currency;
 }
