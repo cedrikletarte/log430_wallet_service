@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final GatewayHeaderAuthenticationFilter gatewayHeaderAuthenticationFilter;
+    private final ServiceAuthenticationFilter serviceAuthenticationFilter;
 
     /**
      * Configures the authentication manager bean from the Spring Security
@@ -35,11 +36,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Swagger endpoint public access
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // Internal endpoints - authenticated by ServiceAuthenticationFilter
+                        .requestMatchers("/internal/**").permitAll()
                         // Authenticated access to wallet endpoints
-                        .requestMatchers("/api/wallet/**").authenticated()
+                        .requestMatchers("/api/wallet/**").hasRole("USER")
                         .anyRequest().authenticated())
+
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(serviceAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(gatewayHeaderAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

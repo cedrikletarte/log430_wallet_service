@@ -11,15 +11,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
+
 
 @Slf4j
 @Component
@@ -86,9 +89,10 @@ public class GatewayHeaderAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
         
-        // don't filter public paths
+        // don't filter public paths and internal service-to-service endpoints
         return path.startsWith("/v3/api-docs") ||
-               path.startsWith("/swagger-ui");
+               path.startsWith("/swagger-ui") ||
+               path.startsWith("/internal");     // Exclure les endpoints internes (service-to-service)
     }
 
     private boolean validateSignature(String signature, String userId, String email, String role) {
