@@ -16,6 +16,14 @@ jobs:
       - name: Checkout dépot
         uses: actions/checkout@v3
 
+      - name: Create .env file
+        run: |
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" > .env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "GATEWAY_SECRET=${{ secrets.GATEWAY_SECRET }}" >> .env
+          echo "SERVICE_SECRET=${{ secrets.SERVICE_SECRET }}" >> .env
+
       - name: stop containers
         run: docker compose down -v
 
@@ -23,12 +31,4 @@ jobs:
         run: docker compose pull || true
 
       - name: Start Docker services
-        env:
-          SPRING_DATASOURCE_URL: ${{ secrets.DB_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.DB_USER }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          GATEWAY_SECRET: ${{ secrets.GATEWAY_SECRET }}
-          SPRING_MAIL_USERNAME: ${{ secrets.SMTP_USER }}
-          SPRING_MAIL_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: docker compose up -d --build
