@@ -4,11 +4,11 @@ services:
   # 💰 WALLET SERVICE
   # ============================================
 
-  wallet_service:
+  wallet-service:
     build: .
-    container_name: wallet_service
+    container_name: wallet-service
     depends_on:
-      wallet_postgres:
+      wallet-postgres:
         condition: service_healthy
     expose:
       - "8080"
@@ -23,9 +23,9 @@ services:
     networks:
       - brokerx-network
 
-  wallet_postgres:
+  wallet-postgres:
     image: postgres:17
-    container_name: wallet_postgres
+    container_name: wallet-postgres
     restart: always
     shm_size: 128mb
     environment:
