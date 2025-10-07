@@ -60,6 +60,7 @@ public class GlobalExceptionHandler {
     /**
      * Catches any other unexpected exceptions.
      */
+    /*
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
         // Log l'erreur pour le debugging
@@ -72,4 +73,5 @@ public class GlobalExceptionHandler {
                 null
             ));
     }
+            */
 }
