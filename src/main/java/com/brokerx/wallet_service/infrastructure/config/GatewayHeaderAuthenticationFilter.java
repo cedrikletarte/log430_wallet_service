@@ -92,6 +92,8 @@ public class GatewayHeaderAuthenticationFilter extends OncePerRequestFilter {
         // don't filter public paths and internal service-to-service endpoints
         return path.startsWith("/v3/api-docs") ||
                path.startsWith("/swagger-ui") ||
+               path.startsWith("/actuator/health") ||
+               path.startsWith("/actuator/prometheus") ||
                path.startsWith("/internal");     // Exclure les endpoints internes (service-to-service)
     }
 
