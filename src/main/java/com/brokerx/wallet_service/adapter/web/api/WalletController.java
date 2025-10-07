@@ -33,8 +33,6 @@ public class WalletController {
     public ResponseEntity<ApiResponse<WalletSuccess>> me(Authentication authentication) {
         String userId = authentication.getPrincipal().toString();
         WalletSuccess walletSuccess = walletUseCase.getWalletByUserId(Long.parseLong(userId));
-        System.out.println("Auth principal: " + authentication.getPrincipal());
-        System.out.println("Authorities: " + authentication.getAuthorities());
 
         return ResponseEntity.ok(new ApiResponse<>(
                 "SUCCESS",

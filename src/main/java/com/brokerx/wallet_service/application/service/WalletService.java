@@ -17,9 +17,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Service
 public class WalletService implements WalletUseCase {
+
+    private static final Logger logger = LogManager.getLogger(WalletService.class);
 
     private final WalletRepositoryPort walletRepositoryPort;
     private final WalletTransactionRepositoryPort walletTransactionRepositoryPort;
@@ -32,9 +36,12 @@ public class WalletService implements WalletUseCase {
 
     @Override
     public void debit(Long userId, BigDecimal amount) {
+        logger.info("Debit request - UserId: {}, Amount: {}", userId, amount);
+        
         validateAmount(amount);
         Wallet wallet = walletRepositoryPort.findByUserId(userId)
                 .orElseGet(() -> {
+                    logger.info("Wallet not found for userId: {}, creating new wallet", userId);
                     Wallet created = Wallet.builder()
                             .userId(userId)
                             .currency("CAD")
@@ -63,13 +70,18 @@ public class WalletService implements WalletUseCase {
         WalletValidator.validateUpdate(wallet);
 
         walletRepositoryPort.save(wallet);
+        
+        logger.info("Debit successful - UserId: {}, Amount: {}, New balance: {}", userId, amount, wallet.getBalance());
     }
 
     @Override
     public void credit(Long userId, BigDecimal amount) {
+        logger.info("Credit request - UserId: {}, Amount: {}", userId, amount);
+        
         validateAmount(amount);
         Wallet wallet = walletRepositoryPort.findByUserId(userId)
                 .orElseGet(() -> {
+                    logger.info("Wallet not found for userId: {}, creating new wallet", userId);
                     Wallet created = Wallet.builder()
                             .userId(userId)
                             .currency("CAD")
@@ -96,12 +108,17 @@ public class WalletService implements WalletUseCase {
         wallet.credit(amount);
         WalletValidator.validateUpdate(wallet);
         walletRepositoryPort.save(wallet);
+        
+        logger.info("Credit successful - UserId: {}, Amount: {}, New balance: {}", userId, amount, wallet.getBalance());
     }
 
     @Override
     public WalletSuccess getWalletByUserId(Long userId) {
+        logger.info("Get wallet request - UserId: {}", userId);
+        
         Wallet wallet = walletRepositoryPort.findByUserId(userId)
                 .orElseGet(() -> {
+                    logger.info("Wallet not found for userId: {}, creating new wallet", userId);
                     Wallet created = Wallet.builder()
                             .userId(userId)
                             .currency("CAD")
@@ -141,6 +158,7 @@ public class WalletService implements WalletUseCase {
 
     private void validateAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            logger.warn("Invalid amount provided: {}", amount);
             throw new IllegalArgumentException("Amount must be positive");
         }
     }
