@@ -2,7 +2,6 @@ package com.brokerx.wallet_service.adapter.web.api;
 
 import com.brokerx.wallet_service.application.port.in.command.WalletSuccess;
 import com.brokerx.wallet_service.application.port.in.useCase.WalletUseCase;
-import com.brokerx.wallet_service.application.port.out.WalletRepositoryPort;
 import com.brokerx.wallet_service.adapter.web.dto.WalletResponse;
 
 import lombok.RequiredArgsConstructor;
