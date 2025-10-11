@@ -15,6 +15,8 @@ import jakarta.persistence.EnumType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.hibernate.envers.Audited;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,8 +27,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "wallet_transactions")
-public class WalletTransactionEntity {
+@Audited
+@Table(name = "transactions")
+public class TransactionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,9 +51,6 @@ public class WalletTransactionEntity {
 
     @Column(nullable = true)
     private LocalDate settledAt;
-
-    @Column(nullable = false)
-    private String currency;
 
     @Column(nullable = false)
     private BigDecimal amount;

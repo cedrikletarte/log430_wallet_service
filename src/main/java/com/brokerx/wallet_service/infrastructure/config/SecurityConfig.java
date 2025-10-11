@@ -39,7 +39,7 @@ public class SecurityConfig {
                         // Internal endpoints - authenticated by ServiceAuthenticationFilter
                         .requestMatchers("/internal/**").permitAll()
                         // Authenticated access to wallet endpoints
-                        .requestMatchers("/api/wallet/**").hasRole("USER")
+                        .requestMatchers("/api/wallet/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated())
 
                 .sessionManagement(session -> session

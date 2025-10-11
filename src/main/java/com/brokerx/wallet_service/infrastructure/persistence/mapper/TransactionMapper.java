@@ -1,30 +1,29 @@
 package com.brokerx.wallet_service.infrastructure.persistence.mapper;
 
 import com.brokerx.wallet_service.domain.model.Transaction;
-import com.brokerx.wallet_service.infrastructure.persistence.entity.WalletTransactionEntity;
+import com.brokerx.wallet_service.infrastructure.persistence.entity.TransactionEntity;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class WalletTransactionMapper {
+public class TransactionMapper {
 
-    public WalletTransactionEntity toEntity(Transaction walletTransaction) {
+    public TransactionEntity toEntity(Transaction walletTransaction) {
         if (walletTransaction == null)
             return null;
-        return WalletTransactionEntity.builder()
+        return TransactionEntity.builder()
                 .id(walletTransaction.getId())
                 .walletId(walletTransaction.getWalletId())
                 .type(walletTransaction.getType())
                 .status(walletTransaction.getStatus())
                 .createdAt(walletTransaction.getCreatedAt())
                 .settledAt(walletTransaction.getSettledAt())
-                .currency(walletTransaction.getCurrency())
                 .amount(walletTransaction.getAmount())
                 .isSettled(walletTransaction.isSettled())
                 .build();
     }
 
-    public Transaction toDomain(WalletTransactionEntity entity) {
+    public Transaction toDomain(TransactionEntity entity) {
         if (entity == null)
             return null;
         return Transaction.builder()
@@ -34,7 +33,6 @@ public class WalletTransactionMapper {
                 .status(entity.getStatus())
                 .createdAt(entity.getCreatedAt())
                 .settledAt(entity.getSettledAt())
-                .currency(entity.getCurrency())
                 .amount(entity.getAmount())
                 .isSettled(entity.isSettled())
                 .build();

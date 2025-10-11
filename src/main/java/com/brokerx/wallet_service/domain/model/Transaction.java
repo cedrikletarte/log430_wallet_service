@@ -20,7 +20,6 @@ public class Transaction {
     private TransactionStatus status;
     private LocalDate createdAt;
     private LocalDate settledAt;
-    private String currency;
     private BigDecimal amount;
     private boolean isSettled;
 }

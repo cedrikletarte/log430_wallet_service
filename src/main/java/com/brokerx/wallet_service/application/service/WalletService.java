@@ -4,7 +4,7 @@ import com.brokerx.wallet_service.application.port.in.command.TransactionSuccess
 import com.brokerx.wallet_service.application.port.in.command.WalletSuccess;
 import com.brokerx.wallet_service.application.port.in.useCase.WalletUseCase;
 import com.brokerx.wallet_service.application.port.out.WalletRepositoryPort;
-import com.brokerx.wallet_service.application.port.out.WalletTransactionRepositoryPort;
+import com.brokerx.wallet_service.application.port.out.TransactionRepositoryPort;
 import com.brokerx.wallet_service.domain.model.Wallet;
 import com.brokerx.wallet_service.domain.model.Transaction;
 import com.brokerx.wallet_service.domain.model.TransactionType;
@@ -26,10 +26,10 @@ public class WalletService implements WalletUseCase {
     private static final Logger logger = LogManager.getLogger(WalletService.class);
 
     private final WalletRepositoryPort walletRepositoryPort;
-    private final WalletTransactionRepositoryPort walletTransactionRepositoryPort;
+    private final TransactionRepositoryPort walletTransactionRepositoryPort;
 
     public WalletService(WalletRepositoryPort walletRepositoryPort,
-            WalletTransactionRepositoryPort walletTransactionRepositoryPort) {
+            TransactionRepositoryPort walletTransactionRepositoryPort) {
         this.walletRepositoryPort = walletRepositoryPort;
         this.walletTransactionRepositoryPort = walletTransactionRepositoryPort;
     }
@@ -44,7 +44,7 @@ public class WalletService implements WalletUseCase {
                     logger.info("Wallet not found for userId: {}, creating new wallet", userId);
                     Wallet created = Wallet.builder()
                             .userId(userId)
-                            .currency("CAD")
+                            .currency("USD")
                             .balance(BigDecimal.ZERO)
                             .build();
                     // Validate creation then persist to obtain an id before debit operation
@@ -56,7 +56,6 @@ public class WalletService implements WalletUseCase {
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.SETTLED)
                 .amount(amount)
-                .currency(wallet.getCurrency())
                 .createdAt(LocalDate.now())
                 .settledAt(LocalDate.now())
                 .isSettled(true)
@@ -84,7 +83,7 @@ public class WalletService implements WalletUseCase {
                     logger.info("Wallet not found for userId: {}, creating new wallet", userId);
                     Wallet created = Wallet.builder()
                             .userId(userId)
-                            .currency("CAD")
+                            .currency("USD")
                             .balance(BigDecimal.ZERO)
                             .build();
                     WalletValidator.validateCreation(created);
@@ -95,7 +94,6 @@ public class WalletService implements WalletUseCase {
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .amount(amount)
-                .currency(wallet.getCurrency())
                 .createdAt(LocalDate.now())
                 .settledAt(LocalDate.now())
                 .isSettled(true)
@@ -121,7 +119,7 @@ public class WalletService implements WalletUseCase {
                     logger.info("Wallet not found for userId: {}, creating new wallet", userId);
                     Wallet created = Wallet.builder()
                             .userId(userId)
-                            .currency("CAD")
+                            .currency("USD")
                             .balance(BigDecimal.ZERO)
                             .build();
                     WalletValidator.validateCreation(created);
@@ -149,7 +147,6 @@ public class WalletService implements WalletUseCase {
                         .status(tx.getStatus())
                         .createdAt(tx.getCreatedAt())
                         .settledAt(tx.getSettledAt())
-                        .currency(tx.getCurrency())
                         .amount(tx.getAmount())
                         .isSettled(tx.isSettled())
                         .build())

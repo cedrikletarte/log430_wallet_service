@@ -1,7 +1,7 @@
 package com.brokerx.wallet_service.infrastructure.persistence.repository.walletTransaction;
 
-import com.brokerx.wallet_service.infrastructure.persistence.mapper.WalletTransactionMapper;
-import com.brokerx.wallet_service.application.port.out.WalletTransactionRepositoryPort;
+import com.brokerx.wallet_service.infrastructure.persistence.mapper.TransactionMapper;
+import com.brokerx.wallet_service.application.port.out.TransactionRepositoryPort;
 import com.brokerx.wallet_service.domain.model.Transaction;
 
 import jakarta.transaction.Transactional;
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Transactional
-public class WalletTransactionRepositoryAdapter implements WalletTransactionRepositoryPort {
+public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
 
-    private final SpringWalletTransactionRepository springWalletRepository;
-    private final WalletTransactionMapper walletTransactionMapper;
+    private final SpringTransactionRepository springWalletRepository;
+    private final TransactionMapper walletTransactionMapper;
 
-    public WalletTransactionRepositoryAdapter(SpringWalletTransactionRepository springWalletRepository,
-            WalletTransactionMapper walletTransactionMapper) {
+    public TransactionRepositoryAdapter(SpringTransactionRepository springWalletRepository,
+            TransactionMapper walletTransactionMapper) {
         this.springWalletRepository = springWalletRepository;
         this.walletTransactionMapper = walletTransactionMapper;
     }
@@ -34,5 +34,11 @@ public class WalletTransactionRepositoryAdapter implements WalletTransactionRepo
         return entities.stream()
                 .map(walletTransactionMapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public java.util.Optional<Transaction> findById(Long id) {
+        var entity = springWalletRepository.findById(id);
+        return entity.map(walletTransactionMapper::toDomain);
     }
 }
