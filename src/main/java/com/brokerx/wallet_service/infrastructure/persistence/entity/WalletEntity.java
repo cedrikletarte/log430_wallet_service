@@ -9,6 +9,8 @@ import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 
+import org.hibernate.envers.Audited;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Audited
 @Table(name = "wallets")
 public class WalletEntity {
 

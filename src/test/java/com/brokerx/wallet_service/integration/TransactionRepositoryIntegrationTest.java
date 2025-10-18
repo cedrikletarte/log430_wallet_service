@@ -22,6 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.brokerx.wallet_service.domain.model.Transaction;
 import com.brokerx.wallet_service.domain.model.TransactionStatus;
 import com.brokerx.wallet_service.domain.model.TransactionType;
+import com.brokerx.wallet_service.domain.model.Wallet;
 import com.brokerx.wallet_service.infrastructure.persistence.mapper.TransactionMapper;
 import com.brokerx.wallet_service.infrastructure.persistence.repository.walletTransaction.TransactionRepositoryAdapter;
 
@@ -49,8 +50,10 @@ class TransactionRepositoryIntegrationTest {
 
     @Test
     void shouldSaveAndRetrieveTransaction() {
+        Wallet wallet = Wallet.builder().id(1L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(1L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .createdAt(LocalDate.now())
@@ -62,7 +65,7 @@ class TransactionRepositoryIntegrationTest {
 
         assertNotNull(saved.getId());
         Transaction found = transactionRepository.findById(saved.getId()).orElseThrow();
-        assertEquals(1L, found.getWalletId().longValue());
+        assertEquals(1L, found.getWallet().getId().longValue());
         assertEquals(TransactionType.CREDIT, found.getType());
         assertEquals(TransactionStatus.PENDING, found.getStatus());
         assertEquals(0, BigDecimal.valueOf(100.0).compareTo(found.getAmount()));
@@ -72,8 +75,11 @@ class TransactionRepositoryIntegrationTest {
     @Test
     void shouldFindTransactionsByWalletId() {
         // Créer plusieurs transactions pour le même wallet
+        Wallet wallet2 = Wallet.builder().id(2L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet3 = Wallet.builder().id(3L).userId(2L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction1 = Transaction.builder()
-                .walletId(2L)
+                .wallet(wallet2)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .createdAt(LocalDate.now())
@@ -83,7 +89,7 @@ class TransactionRepositoryIntegrationTest {
                 .build();
 
         Transaction transaction2 = Transaction.builder()
-                .walletId(2L)
+                .wallet(wallet2)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
                 .createdAt(LocalDate.now())
@@ -92,7 +98,7 @@ class TransactionRepositoryIntegrationTest {
                 .build();
 
         Transaction transaction3 = Transaction.builder()
-                .walletId(3L) // Différent wallet
+                .wallet(wallet3) // Différent wallet
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .createdAt(LocalDate.now())
@@ -109,13 +115,15 @@ class TransactionRepositoryIntegrationTest {
         
         assertEquals(2, wallet2Transactions.size());
         assertTrue(wallet2Transactions.stream()
-                .allMatch(t -> t.getWalletId().equals(2L)));
+                .allMatch(t -> t.getWallet().getId().equals(2L)));
     }
 
     @Test
     void shouldSaveCreditTransaction() {
+        Wallet wallet = Wallet.builder().id(4L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction creditTransaction = Transaction.builder()
-                .walletId(4L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .createdAt(LocalDate.now())
@@ -136,8 +144,10 @@ class TransactionRepositoryIntegrationTest {
 
     @Test
     void shouldSaveDebitTransaction() {
+        Wallet wallet = Wallet.builder().id(5L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction debitTransaction = Transaction.builder()
-                .walletId(5L)
+                .wallet(wallet)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
                 .createdAt(LocalDate.now())
@@ -156,8 +166,10 @@ class TransactionRepositoryIntegrationTest {
 
     @Test
     void shouldUpdateTransactionStatus() {
+        Wallet wallet = Wallet.builder().id(6L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(6L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .createdAt(LocalDate.now())
@@ -181,8 +193,10 @@ class TransactionRepositoryIntegrationTest {
 
     @Test
     void shouldHandleFailedTransaction() {
+        Wallet wallet = Wallet.builder().id(7L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(7L)
+                .wallet(wallet)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.FAILED)
                 .createdAt(LocalDate.now())

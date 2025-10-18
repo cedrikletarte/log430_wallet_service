@@ -15,7 +15,7 @@ import lombok.Builder;
 @AllArgsConstructor
 public class Transaction {
     private Long id;
-    private Long walletId;
+    private Wallet wallet;
     private TransactionType type;
     private TransactionStatus status;
     private LocalDate createdAt;

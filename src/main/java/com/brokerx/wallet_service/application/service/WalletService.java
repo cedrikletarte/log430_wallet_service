@@ -59,7 +59,7 @@ public class WalletService implements WalletUseCase {
                 .createdAt(LocalDate.now())
                 .settledAt(LocalDate.now())
                 .isSettled(true)
-                .walletId(wallet.getId())
+                .wallet(wallet)
                 .build();
 
         WalletTransactionValidator.validateCreation(wallet, TransactionType.DEBIT, amount, wallet.getCurrency());
@@ -97,7 +97,7 @@ public class WalletService implements WalletUseCase {
                 .createdAt(LocalDate.now())
                 .settledAt(LocalDate.now())
                 .isSettled(true)
-                .walletId(wallet.getId())
+                .wallet(wallet)
                 .build();
 
         WalletTransactionValidator.validateCreation(wallet, TransactionType.CREDIT, amount, wallet.getCurrency());

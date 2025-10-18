@@ -15,8 +15,10 @@ class TransactionTest {
 
     @Test
     void shouldCreateCreditTransaction() {
+        Wallet wallet = Wallet.builder().id(1L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(1L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("100.00"))
@@ -25,7 +27,7 @@ class TransactionTest {
                 .build();
 
         assertNotNull(transaction);
-        assertEquals(1L, transaction.getWalletId());
+        assertEquals(1L, transaction.getWallet().getId());
         assertEquals(TransactionType.CREDIT, transaction.getType());
         assertEquals(TransactionStatus.PENDING, transaction.getStatus());
         assertEquals(0, new BigDecimal("100.00").compareTo(transaction.getAmount()));
@@ -35,8 +37,10 @@ class TransactionTest {
 
     @Test
     void shouldCreateDebitTransaction() {
+        Wallet wallet = Wallet.builder().id(2L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(2L)
+                .wallet(wallet)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("50.00"))
@@ -45,7 +49,7 @@ class TransactionTest {
                 .build();
 
         assertNotNull(transaction);
-        assertEquals(2L, transaction.getWalletId());
+        assertEquals(2L, transaction.getWallet().getId());
         assertEquals(TransactionType.DEBIT, transaction.getType());
         assertEquals(TransactionStatus.PENDING, transaction.getStatus());
         assertEquals(0, new BigDecimal("50.00").compareTo(transaction.getAmount()));
@@ -55,8 +59,10 @@ class TransactionTest {
     @Test
     void shouldCreateSettledTransaction() {
         LocalDate now = LocalDate.now();
+        Wallet wallet = Wallet.builder().id(3L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(3L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .amount(new BigDecimal("200.00"))
@@ -73,8 +79,10 @@ class TransactionTest {
 
     @Test
     void shouldCreateFailedTransaction() {
+        Wallet wallet = Wallet.builder().id(4L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(4L)
+                .wallet(wallet)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.FAILED)
                 .amount(new BigDecimal("75.00"))
@@ -89,8 +97,10 @@ class TransactionTest {
 
     @Test
     void shouldUpdateTransactionStatus() {
+        Wallet wallet = Wallet.builder().id(5L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(5L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("150.00"))
@@ -113,8 +123,10 @@ class TransactionTest {
 
     @Test
     void shouldHandleDifferentAmounts() {
+        Wallet wallet = Wallet.builder().id(6L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction smallTransaction = Transaction.builder()
-                .walletId(6L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("0.01"))
@@ -123,7 +135,7 @@ class TransactionTest {
                 .build();
 
         Transaction largeTransaction = Transaction.builder()
-                .walletId(6L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("99999.99"))
@@ -137,8 +149,10 @@ class TransactionTest {
 
     @Test
     void shouldHandleDecimalPrecision() {
+        Wallet wallet = Wallet.builder().id(7L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(7L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .amount(new BigDecimal("123.45"))
@@ -153,9 +167,10 @@ class TransactionTest {
     @Test
     void shouldHandleAllTransactionStatuses() {
         LocalDate now = LocalDate.now();
+        Wallet wallet = Wallet.builder().id(8L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
 
         Transaction pending = Transaction.builder()
-                .walletId(8L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("100.00"))
@@ -164,7 +179,7 @@ class TransactionTest {
                 .build();
 
         Transaction settled = Transaction.builder()
-                .walletId(8L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .amount(new BigDecimal("100.00"))
@@ -174,7 +189,7 @@ class TransactionTest {
                 .build();
 
         Transaction failed = Transaction.builder()
-                .walletId(8L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.FAILED)
                 .amount(new BigDecimal("100.00"))
@@ -189,8 +204,10 @@ class TransactionTest {
 
     @Test
     void shouldHandleBothTransactionTypes() {
+        Wallet wallet = Wallet.builder().id(9L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction credit = Transaction.builder()
-                .walletId(9L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("100.00"))
@@ -199,7 +216,7 @@ class TransactionTest {
                 .build();
 
         Transaction debit = Transaction.builder()
-                .walletId(9L)
+                .wallet(wallet)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("50.00"))
@@ -214,9 +231,10 @@ class TransactionTest {
     @Test
     void shouldSetAndGetAllFields() {
         Transaction transaction = new Transaction();
+        Wallet wallet = Wallet.builder().id(10L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
         
         transaction.setId(100L);
-        transaction.setWalletId(10L);
+        transaction.setWallet(wallet);
         transaction.setType(TransactionType.CREDIT);
         transaction.setStatus(TransactionStatus.PENDING);
         transaction.setCreatedAt(LocalDate.now());
@@ -224,7 +242,7 @@ class TransactionTest {
         transaction.setSettled(false);
 
         assertEquals(100L, transaction.getId());
-        assertEquals(10L, transaction.getWalletId());
+        assertEquals(10L, transaction.getWallet().getId());
         assertEquals(TransactionType.CREDIT, transaction.getType());
         assertEquals(TransactionStatus.PENDING, transaction.getStatus());
         assertNotNull(transaction.getCreatedAt());
@@ -234,8 +252,10 @@ class TransactionTest {
 
     @Test
     void shouldTransitionFromPendingToSettled() {
+        Wallet wallet = Wallet.builder().id(11L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(11L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("300.00"))
@@ -261,8 +281,10 @@ class TransactionTest {
 
     @Test
     void shouldTransitionFromPendingToFailed() {
+        Wallet wallet = Wallet.builder().id(12L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(12L)
+                .wallet(wallet)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("400.00"))
@@ -286,8 +308,10 @@ class TransactionTest {
     @Test
     void shouldHandleSettledTransactionWithSettledDate() {
         LocalDate now = LocalDate.now();
+        Wallet wallet = Wallet.builder().id(13L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = Transaction.builder()
-                .walletId(13L)
+                .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .amount(new BigDecimal("500.00"))
@@ -309,7 +333,7 @@ class TransactionTest {
         
         assertNotNull(transaction);
         assertNull(transaction.getId());
-        assertNull(transaction.getWalletId());
+        assertNull(transaction.getWallet());
         assertNull(transaction.getType());
         assertNull(transaction.getStatus());
         assertNull(transaction.getCreatedAt());
@@ -320,9 +344,11 @@ class TransactionTest {
     @Test
     void shouldCreateTransactionWithAllArgsConstructor() {
         LocalDate now = LocalDate.now();
+        Wallet wallet = Wallet.builder().id(100L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        
         Transaction transaction = new Transaction(
                 1L,
-                100L,
+                wallet,
                 TransactionType.CREDIT,
                 TransactionStatus.SETTLED,
                 now,
@@ -332,7 +358,7 @@ class TransactionTest {
         );
 
         assertEquals(1L, transaction.getId());
-        assertEquals(100L, transaction.getWalletId());
+        assertEquals(100L, transaction.getWallet().getId());
         assertEquals(TransactionType.CREDIT, transaction.getType());
         assertEquals(TransactionStatus.SETTLED, transaction.getStatus());
         assertEquals(now, transaction.getCreatedAt());

@@ -8,12 +8,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransactionMapper {
 
+    private final WalletMapper walletMapper;
+
+    public TransactionMapper(WalletMapper walletMapper) {
+        this.walletMapper = walletMapper;
+    }
+
     public TransactionEntity toEntity(Transaction walletTransaction) {
         if (walletTransaction == null)
             return null;
         return TransactionEntity.builder()
                 .id(walletTransaction.getId())
-                .walletId(walletTransaction.getWalletId())
+                .wallet(walletMapper.toEntity(walletTransaction.getWallet()))
                 .type(walletTransaction.getType())
                 .status(walletTransaction.getStatus())
                 .createdAt(walletTransaction.getCreatedAt())
@@ -28,7 +34,7 @@ public class TransactionMapper {
             return null;
         return Transaction.builder()
                 .id(entity.getId())
-                .walletId(entity.getWalletId())
+                .wallet(walletMapper.toDomain(entity.getWallet()))
                 .type(entity.getType())
                 .status(entity.getStatus())
                 .createdAt(entity.getCreatedAt())
