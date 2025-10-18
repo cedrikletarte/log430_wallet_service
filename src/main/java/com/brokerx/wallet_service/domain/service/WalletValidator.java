@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 public class WalletValidator {
 
-    // Validation lors de la création d'un portefeuille
+    // Validation during wallet creation
     public static void validateCreation(Wallet wallet) {
         if (wallet == null) {
             throw WalletException.invalid("wallet", "null", "Wallet is null");
@@ -27,7 +27,7 @@ public class WalletValidator {
         }
     }
 
-    // Validation lors d'une mise à jour (après opération)
+    // Validation during wallet update (after operation)
     public static void validateUpdate(Wallet wallet) {
         if (wallet == null) {
             throw WalletException.invalid("wallet", "null", "Wallet does not exist");
