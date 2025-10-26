@@ -48,7 +48,6 @@ public class InternalWalletController {
     @PostMapping("/debit/{userId}/{amount}")
     public void debitWallet(@PathVariable Long userId, @PathVariable BigDecimal amount) {
         walletUseCase.debit(userId, amount);
-
     }
 
 

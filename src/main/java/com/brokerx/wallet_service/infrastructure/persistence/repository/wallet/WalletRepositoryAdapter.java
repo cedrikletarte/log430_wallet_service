@@ -7,6 +7,7 @@ import com.brokerx.wallet_service.infrastructure.persistence.mapper.WalletMapper
 
 import jakarta.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,18 @@ public class WalletRepositoryAdapter implements WalletRepositoryPort {
         entity = springWalletRepository.save(entity);
         return walletMapper.toDomain(entity);
     }
+
+    @Override
+    public List<Wallet> saveAll(List<Wallet> wallets) {
+        List<WalletEntity> entities = wallets.stream()
+                .map(walletMapper::toEntity)
+                .toList();
+        List<WalletEntity> savedEntities = springWalletRepository.saveAll(entities);
+        return savedEntities.stream()
+                .map(walletMapper::toDomain)
+                .toList();
+    }
+
 
     @Override
     public Optional<Wallet> findById(Long id) {

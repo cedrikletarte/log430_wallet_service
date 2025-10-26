@@ -1,6 +1,8 @@
 package com.brokerx.wallet_service.infrastructure.seeder;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.core.annotation.Order;
 import org.slf4j.Logger;
@@ -16,19 +18,45 @@ import com.brokerx.wallet_service.infrastructure.persistence.repository.wallet.W
 @Order(1)
 public class WalletSeeder {
 
-        private static final Logger log = LoggerFactory.getLogger(WalletSeeder.class);
+    private static final Logger log = LoggerFactory.getLogger(WalletSeeder.class);
+    private static final int TEST_USERS_COUNT = 50;
+    private static final BigDecimal INITIAL_BALANCE = BigDecimal.valueOf(1000000000); // 1B per trader
 
     @Bean
     CommandLineRunner seedWallet(WalletRepositoryAdapter walletRepository) {
         return args -> {
+            List<Wallet> walletsToCreate = new ArrayList<>();
+            
+            // 1. Create wallet for admin (userId = 1)
             if (walletRepository.findById(1L).isEmpty()) {
-                Wallet wallet = Wallet.builder()
+                Wallet adminWallet = Wallet.builder()
                         .userId(1L)
                         .balance(BigDecimal.valueOf(1000))
                         .currency("USD")
                         .build();
-                walletRepository.save(wallet);
-                log.info("Wallet created for user ID {}: {}", wallet.getUserId(), wallet.getBalance());
+                walletRepository.save(adminWallet);
+                log.info("✅ Admin wallet created: {}", adminWallet.getId());
+            }
+            
+            // 2. Create wallets for test traders (userId = 2 to 31)
+            for (long userId = 2; userId <= TEST_USERS_COUNT + 1; userId++) {
+                if (walletRepository.findById(userId).isEmpty()) {
+                    Wallet traderWallet = Wallet.builder()
+                            .userId(userId)
+                            .balance(INITIAL_BALANCE)
+                            .currency("USD")
+                            .build();
+                    walletsToCreate.add(traderWallet);
+                }
+            }
+            
+            // Save all new wallets in batch
+            if (!walletsToCreate.isEmpty()) {
+                walletRepository.saveAll(walletsToCreate);
+                log.info("✅ Created {} test wallets (trader1@test.com to trader{}@test.com)", 
+                         walletsToCreate.size(), TEST_USERS_COUNT);
+            } else {
+                log.info("ℹ️ Wallets already exist");
             }
         };
     }
