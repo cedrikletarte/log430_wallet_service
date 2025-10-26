@@ -50,7 +50,13 @@ class TransactionRepositoryIntegrationTest {
 
     @Test
     void shouldSaveAndRetrieveTransaction() {
-        Wallet wallet = Wallet.builder().id(1L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder()
+                        .id(1L)
+                        .userId(1L)
+                        .currency("USD")
+                        .availableBalance(BigDecimal.ZERO)
+                        .reservedBalance(BigDecimal.ZERO)
+                        .build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -75,9 +81,9 @@ class TransactionRepositoryIntegrationTest {
     @Test
     void shouldFindTransactionsByWalletId() {
         // Créer plusieurs transactions pour le même wallet
-        Wallet wallet2 = Wallet.builder().id(2L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
-        Wallet wallet3 = Wallet.builder().id(3L).userId(2L).currency("USD").balance(BigDecimal.ZERO).build();
-        
+        Wallet wallet2 = Wallet.builder().id(2L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).reservedBalance(BigDecimal.ZERO).build();
+        Wallet wallet3 = Wallet.builder().id(3L).userId(2L).currency("USD").availableBalance(BigDecimal.ZERO).reservedBalance(BigDecimal.ZERO).build();
+
         Transaction transaction1 = Transaction.builder()
                 .wallet(wallet2)
                 .type(TransactionType.CREDIT)
@@ -120,7 +126,7 @@ class TransactionRepositoryIntegrationTest {
 
     @Test
     void shouldSaveCreditTransaction() {
-        Wallet wallet = Wallet.builder().id(4L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(4L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).reservedBalance(BigDecimal.ZERO).build();
         
         Transaction creditTransaction = Transaction.builder()
                 .wallet(wallet)
@@ -144,7 +150,7 @@ class TransactionRepositoryIntegrationTest {
 
     @Test
     void shouldSaveDebitTransaction() {
-        Wallet wallet = Wallet.builder().id(5L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(5L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).reservedBalance(BigDecimal.ZERO).build();
         
         Transaction debitTransaction = Transaction.builder()
                 .wallet(wallet)
@@ -166,7 +172,7 @@ class TransactionRepositoryIntegrationTest {
 
     @Test
     void shouldUpdateTransactionStatus() {
-        Wallet wallet = Wallet.builder().id(6L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(6L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).reservedBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -193,7 +199,7 @@ class TransactionRepositoryIntegrationTest {
 
     @Test
     void shouldHandleFailedTransaction() {
-        Wallet wallet = Wallet.builder().id(7L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(7L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).reservedBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)

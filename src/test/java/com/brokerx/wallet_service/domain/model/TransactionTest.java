@@ -15,7 +15,13 @@ class TransactionTest {
 
     @Test
     void shouldCreateCreditTransaction() {
-        Wallet wallet = Wallet.builder().id(1L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder()
+                        .id(1L)
+                        .userId(1L)
+                        .currency("USD")
+                        .availableBalance(BigDecimal.ZERO)
+                        .reservedBalance(BigDecimal.ZERO)
+                        .build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -37,7 +43,7 @@ class TransactionTest {
 
     @Test
     void shouldCreateDebitTransaction() {
-        Wallet wallet = Wallet.builder().id(2L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(2L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -59,7 +65,7 @@ class TransactionTest {
     @Test
     void shouldCreateSettledTransaction() {
         LocalDate now = LocalDate.now();
-        Wallet wallet = Wallet.builder().id(3L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(3L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -79,7 +85,7 @@ class TransactionTest {
 
     @Test
     void shouldCreateFailedTransaction() {
-        Wallet wallet = Wallet.builder().id(4L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(4L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -97,7 +103,7 @@ class TransactionTest {
 
     @Test
     void shouldUpdateTransactionStatus() {
-        Wallet wallet = Wallet.builder().id(5L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(5L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -123,7 +129,7 @@ class TransactionTest {
 
     @Test
     void shouldHandleDifferentAmounts() {
-        Wallet wallet = Wallet.builder().id(6L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(6L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction smallTransaction = Transaction.builder()
                 .wallet(wallet)
@@ -149,7 +155,7 @@ class TransactionTest {
 
     @Test
     void shouldHandleDecimalPrecision() {
-        Wallet wallet = Wallet.builder().id(7L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(7L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -167,7 +173,7 @@ class TransactionTest {
     @Test
     void shouldHandleAllTransactionStatuses() {
         LocalDate now = LocalDate.now();
-        Wallet wallet = Wallet.builder().id(8L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(8L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
 
         Transaction pending = Transaction.builder()
                 .wallet(wallet)
@@ -204,7 +210,7 @@ class TransactionTest {
 
     @Test
     void shouldHandleBothTransactionTypes() {
-        Wallet wallet = Wallet.builder().id(9L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(9L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction credit = Transaction.builder()
                 .wallet(wallet)
@@ -231,7 +237,7 @@ class TransactionTest {
     @Test
     void shouldSetAndGetAllFields() {
         Transaction transaction = new Transaction();
-        Wallet wallet = Wallet.builder().id(10L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(10L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         transaction.setId(100L);
         transaction.setWallet(wallet);
@@ -252,7 +258,7 @@ class TransactionTest {
 
     @Test
     void shouldTransitionFromPendingToSettled() {
-        Wallet wallet = Wallet.builder().id(11L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(11L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -281,7 +287,7 @@ class TransactionTest {
 
     @Test
     void shouldTransitionFromPendingToFailed() {
-        Wallet wallet = Wallet.builder().id(12L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(12L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -308,7 +314,7 @@ class TransactionTest {
     @Test
     void shouldHandleSettledTransactionWithSettledDate() {
         LocalDate now = LocalDate.now();
-        Wallet wallet = Wallet.builder().id(13L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(13L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
                 .wallet(wallet)
@@ -344,7 +350,7 @@ class TransactionTest {
     @Test
     void shouldCreateTransactionWithAllArgsConstructor() {
         LocalDate now = LocalDate.now();
-        Wallet wallet = Wallet.builder().id(100L).userId(1L).currency("USD").balance(BigDecimal.ZERO).build();
+        Wallet wallet = Wallet.builder().id(100L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = new Transaction(
                 1L,

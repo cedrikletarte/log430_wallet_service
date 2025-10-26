@@ -13,7 +13,8 @@ public class WalletMapper {
             return null;
         return WalletEntity.builder()
                 .id(wallet.getId())
-                .balance(wallet.getBalance())
+                .availableBalance(wallet.getAvailableBalance())
+                .reservedBalance(wallet.getReservedBalance())
                 .currency(wallet.getCurrency())
                 .userId(wallet.getUserId())
                 .build();
@@ -24,7 +25,8 @@ public class WalletMapper {
             return null;
         return Wallet.builder()
                 .id(entity.getId())
-                .balance(entity.getBalance())
+                .availableBalance(entity.getAvailableBalance())
+                .reservedBalance(entity.getReservedBalance())
                 .currency(entity.getCurrency())
                 .userId(entity.getUserId())
                 .build();

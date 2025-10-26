@@ -28,10 +28,11 @@ public class WalletSeeder {
             List<Wallet> walletsToCreate = new ArrayList<>();
             
             // 1. Create wallet for admin (userId = 1)
-            if (walletRepository.findById(1L).isEmpty()) {
+            if (walletRepository.findByUserId(1L).isEmpty()) {
                 Wallet adminWallet = Wallet.builder()
                         .userId(1L)
-                        .balance(BigDecimal.valueOf(1000))
+                        .availableBalance(BigDecimal.valueOf(1000))
+                        .reservedBalance(BigDecimal.ZERO)
                         .currency("USD")
                         .build();
                 walletRepository.save(adminWallet);
@@ -40,10 +41,11 @@ public class WalletSeeder {
             
             // 2. Create wallets for test traders (userId = 2 to 31)
             for (long userId = 2; userId <= TEST_USERS_COUNT + 1; userId++) {
-                if (walletRepository.findById(userId).isEmpty()) {
+                if (walletRepository.findByUserId(userId).isEmpty()) {
                     Wallet traderWallet = Wallet.builder()
                             .userId(userId)
-                            .balance(INITIAL_BALANCE)
+                            .availableBalance(INITIAL_BALANCE)
+                            .reservedBalance(BigDecimal.ZERO)
                             .currency("USD")
                             .build();
                     walletsToCreate.add(traderWallet);

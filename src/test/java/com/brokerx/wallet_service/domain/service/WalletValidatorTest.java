@@ -17,7 +17,8 @@ class WalletValidatorTest {
         return Wallet.builder()
                 .userId(1L)
                 .currency("USD")
-                .balance(new BigDecimal("1000.00"))
+                .availableBalance(new BigDecimal("1000.00"))
+                .reservedBalance(BigDecimal.ZERO)
                 .build();
     }
 
@@ -66,28 +67,28 @@ class WalletValidatorTest {
     }
 
     @Test
-    void shouldRejectNullBalanceForCreation() {
+    void shouldRejectNullAvailableBalanceForCreation() {
         Wallet wallet = createValidWallet();
-        wallet.setBalance(null);
+        wallet.setAvailableBalance(null);
 
         WalletException exception = assertThrows(WalletException.class,
                 () -> WalletValidator.validateCreation(wallet));
-        assertTrue(exception.getMessage().contains("Wallet balance is required"));
+        assertTrue(exception.getMessage().contains("Wallet availableBalance is required"));
     }
 
     @Test
-    void shouldRejectNegativeBalanceForCreation() {
+    void shouldRejectNegativeAvailableBalanceForCreation() {
         Wallet wallet = createValidWallet();
-        wallet.setBalance(new BigDecimal("-100.00"));
+        wallet.setAvailableBalance(new BigDecimal("-100.00"));
 
         assertThrows(WalletException.class,
                 () -> WalletValidator.validateCreation(wallet));
     }
 
     @Test
-    void shouldAcceptZeroBalanceForCreation() {
+    void shouldAcceptZeroAvailableBalanceForCreation() {
         Wallet wallet = createValidWallet();
-        wallet.setBalance(BigDecimal.ZERO);
+        wallet.setAvailableBalance(BigDecimal.ZERO);
 
         assertDoesNotThrow(() -> WalletValidator.validateCreation(wallet));
     }
@@ -95,14 +96,14 @@ class WalletValidatorTest {
     @Test
     void shouldAcceptPositiveBalanceForCreation() {
         Wallet wallet = createValidWallet();
-        
-        wallet.setBalance(new BigDecimal("0.01"));
+
+        wallet.setAvailableBalance(new BigDecimal("0.01"));
         assertDoesNotThrow(() -> WalletValidator.validateCreation(wallet));
-        
-        wallet.setBalance(new BigDecimal("1000.00"));
+
+        wallet.setAvailableBalance(new BigDecimal("1000.00"));
         assertDoesNotThrow(() -> WalletValidator.validateCreation(wallet));
-        
-        wallet.setBalance(new BigDecimal("99999.99"));
+
+        wallet.setAvailableBalance(new BigDecimal("99999.99"));
         assertDoesNotThrow(() -> WalletValidator.validateCreation(wallet));
     }
 
@@ -135,18 +136,18 @@ class WalletValidatorTest {
     void shouldRejectNullBalanceForUpdate() {
         Wallet wallet = createValidWallet();
         wallet.setId(1L);
-        wallet.setBalance(null);
+        wallet.setAvailableBalance(null);
 
         WalletException exception = assertThrows(WalletException.class,
                 () -> WalletValidator.validateUpdate(wallet));
-        assertTrue(exception.getMessage().contains("Wallet balance cannot be null"));
+        assertTrue(exception.getMessage().contains("Wallet availableBalance cannot be null"));
     }
 
     @Test
     void shouldRejectNegativeBalanceForUpdate() {
         Wallet wallet = createValidWallet();
         wallet.setId(1L);
-        wallet.setBalance(new BigDecimal("-50.00"));
+        wallet.setAvailableBalance(new BigDecimal("-50.00"));
 
         assertThrows(WalletException.class,
                 () -> WalletValidator.validateUpdate(wallet));
@@ -156,7 +157,7 @@ class WalletValidatorTest {
     void shouldAcceptZeroBalanceForUpdate() {
         Wallet wallet = createValidWallet();
         wallet.setId(1L);
-        wallet.setBalance(BigDecimal.ZERO);
+        wallet.setAvailableBalance(BigDecimal.ZERO);
 
         assertDoesNotThrow(() -> WalletValidator.validateUpdate(wallet));
     }

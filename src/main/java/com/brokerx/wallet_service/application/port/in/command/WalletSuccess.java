@@ -12,6 +12,7 @@ import lombok.Getter;
 public class WalletSuccess {
 
     private Long id;
-    private BigDecimal balance;
+    private BigDecimal availableBalance;
+    private BigDecimal reservedBalance;
     private String currency;
 }

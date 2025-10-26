@@ -19,7 +19,8 @@ class WalletTransactionValidatorTest {
                 .id(1L)
                 .userId(100L)
                 .currency("USD")
-                .balance(new BigDecimal(balance))
+                .availableBalance(new BigDecimal(balance))
+                .reservedBalance(BigDecimal.ZERO)
                 .build();
     }
 
@@ -197,7 +198,7 @@ class WalletTransactionValidatorTest {
     @Test
     void shouldRejectDebitFromWalletWithNullBalance() {
         Wallet wallet = createWalletWithBalance("1000.00");
-        wallet.setBalance(null);
+        wallet.setAvailableBalance(null);
         BigDecimal amount = new BigDecimal("100.00");
 
         WalletTransactionException exception = assertThrows(WalletTransactionException.class,

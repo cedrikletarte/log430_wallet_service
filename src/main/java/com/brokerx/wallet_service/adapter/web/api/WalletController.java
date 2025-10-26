@@ -1,9 +1,11 @@
 package com.brokerx.wallet_service.adapter.web.api;
 
 import com.brokerx.wallet_service.adapter.web.dto.ApiResponse;
+import com.brokerx.wallet_service.adapter.web.dto.WalletOperationRequest;
 import com.brokerx.wallet_service.application.port.in.command.WalletSuccess;
 import com.brokerx.wallet_service.application.port.in.command.TransactionSuccess;
 import com.brokerx.wallet_service.application.port.in.useCase.WalletUseCase;
+import com.brokerx.wallet_service.application.port.in.useCase.WalletWithIdempotencyUseCase;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,9 +26,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class WalletController {
 
     private final WalletUseCase walletUseCase;
+    private final WalletWithIdempotencyUseCase walletWithIdempotencyUseCase;
 
-    public WalletController(WalletUseCase walletUseCase) {
+    public WalletController(WalletUseCase walletUseCase, WalletWithIdempotencyUseCase walletWithIdempotencyUseCase) {
         this.walletUseCase = walletUseCase;
+        this.walletWithIdempotencyUseCase = walletWithIdempotencyUseCase;
     }
 
     @GetMapping("/me")
@@ -55,28 +59,28 @@ public class WalletController {
     
 
     @PostMapping("/credit")
-    public ResponseEntity<ApiResponse<Map<String, String>>> credit(@RequestBody Map<String, BigDecimal> payload,
+    public ResponseEntity<ApiResponse<Map<String, String>>> credit(@RequestBody WalletOperationRequest payload,
             Authentication authentication) {
         String userId = authentication.getPrincipal().toString();
-        walletUseCase.credit(Long.parseLong(userId), payload.get("amount"));
+        walletWithIdempotencyUseCase.creditWithIdempotency(Long.parseLong(userId), payload.getAmount(), payload.getIdempotencyKey());
 
         return ResponseEntity.ok(new ApiResponse<>(
                 "SUCCESS",
                 null,
                 "Amount added successfully",
-                Map.of("userId", userId, "amount", payload.get("amount").toString())));
+                Map.of("userId", userId, "amount", payload.getAmount().toString())));
     }
 
     @PostMapping("/debit")
-    public ResponseEntity<ApiResponse<Map<String, String>>> debit(@RequestBody Map<String, BigDecimal> payload,
+    public ResponseEntity<ApiResponse<Map<String, String>>> debit(@RequestBody WalletOperationRequest payload,
             Authentication authentication) {
         String userId = authentication.getPrincipal().toString();
-        walletUseCase.debit(Long.parseLong(userId), payload.get("amount"));
+        walletWithIdempotencyUseCase.debitWithIdempotency(Long.parseLong(userId), payload.getAmount(), payload.getIdempotencyKey());
 
         return ResponseEntity.ok(new ApiResponse<>(
                 "SUCCESS",
                 null,
                 "Amount withdrawn successfully",
-                Map.of("userId", userId, "amount", payload.get("amount").toString())));
+                Map.of("userId", userId, "amount", payload.getAmount().toString())));
     }
 }

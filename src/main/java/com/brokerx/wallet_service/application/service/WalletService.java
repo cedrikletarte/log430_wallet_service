@@ -45,7 +45,8 @@ public class WalletService implements WalletUseCase {
                     Wallet created = Wallet.builder()
                             .userId(userId)
                             .currency("USD")
-                            .balance(BigDecimal.ZERO)
+                            .availableBalance(BigDecimal.ZERO)
+                            .reservedBalance(BigDecimal.ZERO)
                             .build();
                     // Validate creation then persist to obtain an id before debit operation
                     WalletValidator.validateCreation(created);
@@ -70,7 +71,7 @@ public class WalletService implements WalletUseCase {
 
         walletRepositoryPort.save(wallet);
         
-        logger.info("Debit successful - UserId: {}, Amount: {}, New balance: {}", userId, amount, wallet.getBalance());
+        logger.info("Debit successful - UserId: {}, Amount: {}, New balance: {}", userId, amount, wallet.getAvailableBalance());
     }
 
     @Override
@@ -84,7 +85,8 @@ public class WalletService implements WalletUseCase {
                     Wallet created = Wallet.builder()
                             .userId(userId)
                             .currency("USD")
-                            .balance(BigDecimal.ZERO)
+                            .availableBalance(BigDecimal.ZERO)
+                            .reservedBalance(BigDecimal.ZERO)
                             .build();
                     WalletValidator.validateCreation(created);
                     return walletRepositoryPort.save(created);
@@ -107,7 +109,7 @@ public class WalletService implements WalletUseCase {
         WalletValidator.validateUpdate(wallet);
         walletRepositoryPort.save(wallet);
         
-        logger.info("Credit successful - UserId: {}, Amount: {}, New balance: {}", userId, amount, wallet.getBalance());
+        logger.info("Credit successful - UserId: {}, Amount: {}, New balance: {}", userId, amount, wallet.getAvailableBalance());
     }
 
     @Override
@@ -120,7 +122,8 @@ public class WalletService implements WalletUseCase {
                     Wallet created = Wallet.builder()
                             .userId(userId)
                             .currency("USD")
-                            .balance(BigDecimal.ZERO)
+                            .availableBalance(BigDecimal.ZERO)
+                            .reservedBalance(BigDecimal.ZERO)
                             .build();
                     WalletValidator.validateCreation(created);
                     return walletRepositoryPort.save(created);
@@ -128,7 +131,8 @@ public class WalletService implements WalletUseCase {
 
         return WalletSuccess.builder()
                 .id(wallet.getId())
-                .balance(wallet.getBalance())
+                .availableBalance(wallet.getAvailableBalance())
+                .reservedBalance(wallet.getReservedBalance())
                 .currency(wallet.getCurrency())
                 .build();
     }

@@ -44,20 +44,21 @@ class WalletRepositoryIntegrationTest {
     void shouldSaveAndRetrieveWallet() {
         Wallet wallet = new Wallet();
         wallet.setUserId(1L);
-        wallet.setBalance(BigDecimal.valueOf(1000.0));
+        wallet.setAvailableBalance(BigDecimal.valueOf(1000.0));
+        wallet.setReservedBalance(BigDecimal.ZERO);
         wallet.setCurrency("USD");
 
         walletRepository.save(wallet);
 
         Wallet found = walletRepository.findByUserId(1L).orElseThrow();
-        assertEquals(0, BigDecimal.valueOf(1000.0).compareTo(found.getBalance()));
+        assertEquals(0, BigDecimal.valueOf(1000.0).compareTo(found.getAvailableBalance()));
     }
 
     @Test
     void shouldCreditWalletBalance() {
         Wallet wallet = new Wallet();
         wallet.setUserId(2L);
-        wallet.setBalance(BigDecimal.valueOf(500.0));
+        wallet.setAvailableBalance(BigDecimal.valueOf(500.0));
         wallet.setCurrency("USD");
 
         walletRepository.save(wallet);
@@ -67,14 +68,14 @@ class WalletRepositoryIntegrationTest {
         walletRepository.save(found);
 
         Wallet updated = walletRepository.findByUserId(2L).orElseThrow();
-        assertEquals(0, BigDecimal.valueOf(700.0).compareTo(updated.getBalance()));
+        assertEquals(0, BigDecimal.valueOf(700.0).compareTo(updated.getAvailableBalance()));
     }
 
     @Test
     void shouldDebitWalletBalance() {
         Wallet wallet = new Wallet();
         wallet.setUserId(3L);
-        wallet.setBalance(BigDecimal.valueOf(800.0));
+        wallet.setAvailableBalance(BigDecimal.valueOf(800.0));
         wallet.setCurrency("USD");
 
         walletRepository.save(wallet);
@@ -84,6 +85,6 @@ class WalletRepositoryIntegrationTest {
         walletRepository.save(found);
 
         Wallet updated = walletRepository.findByUserId(3L).orElseThrow();
-        assertEquals(0, BigDecimal.valueOf(500.0).compareTo(updated.getBalance()));
+        assertEquals(0, BigDecimal.valueOf(500.0).compareTo(updated.getAvailableBalance()));
     }
 }

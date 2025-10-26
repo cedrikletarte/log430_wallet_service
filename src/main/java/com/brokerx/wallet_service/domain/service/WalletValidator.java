@@ -19,11 +19,11 @@ public class WalletValidator {
             throw WalletException.invalid("currency", String.valueOf(wallet.getCurrency()),
                     "Wallet currency is required");
         }
-        if (wallet.getBalance() == null) {
+        if (wallet.getAvailableBalance() == null) {
             throw WalletException.invalid("balance", "null", "Wallet balance is required");
         }
-        if (wallet.getBalance().compareTo(BigDecimal.ZERO) < 0) {
-            throw WalletException.negativeBalance(wallet.getBalance().toPlainString());
+        if (wallet.getAvailableBalance().compareTo(BigDecimal.ZERO) < 0) {
+            throw WalletException.negativeBalance(wallet.getAvailableBalance().toPlainString());
         }
     }
 
@@ -35,11 +35,11 @@ public class WalletValidator {
         if (wallet.getId() == null) {
             throw WalletException.invalid("id", "null", "Wallet id is required for update");
         }
-        if (wallet.getBalance() == null) {
+        if (wallet.getAvailableBalance() == null) {
             throw WalletException.invalid("balance", "null", "Wallet balance cannot be null");
         }
-        if (wallet.getBalance().compareTo(BigDecimal.ZERO) < 0) {
-            throw WalletException.negativeBalance(wallet.getBalance().toPlainString());
+        if (wallet.getAvailableBalance().compareTo(BigDecimal.ZERO) < 0) {
+            throw WalletException.negativeBalance(wallet.getAvailableBalance().toPlainString());
         }
     }
 }

@@ -36,7 +36,7 @@ public class InternalWalletController {
         WalletSuccess walletSuccess = walletUseCase.getWalletByUserId(userId);
 
         return walletSuccess != null
-                ? ResponseEntity.ok(new WalletResponse(walletSuccess.getId(), walletSuccess.getCurrency(), walletSuccess.getBalance()))
+                ? ResponseEntity.ok(new WalletResponse(walletSuccess.getId(), walletSuccess.getCurrency(), walletSuccess.getAvailableBalance(), walletSuccess.getReservedBalance()))
                 : ResponseEntity.notFound().build();
     }
 

@@ -47,11 +47,11 @@ public class WalletTransactionValidator {
     }
 
     private static void validateDebitAmount(Wallet wallet, BigDecimal amount) {
-        if (wallet.getBalance() == null) {
+        if (wallet.getAvailableBalance() == null) {
             throw WalletTransactionException.invalid("balance", "null", "Wallet balance is missing");
         }
-        if (wallet.getBalance().compareTo(amount) < 0) {
-            throw WalletTransactionException.insufficientFunds(wallet.getBalance(), amount);
+        if (wallet.getAvailableBalance().compareTo(amount) < 0) {
+            throw WalletTransactionException.insufficientFunds(wallet.getAvailableBalance(), amount);
         }
     }
 }

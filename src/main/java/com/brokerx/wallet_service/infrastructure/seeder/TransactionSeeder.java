@@ -29,7 +29,7 @@ public class TransactionSeeder {
             WalletRepositoryAdapter walletRepositoryAdapter) {
         return args -> {
             if (walletTransactionRepositoryAdapter.findById(1L).isEmpty()) {
-                Wallet wallet = walletRepositoryAdapter.findById(1L)
+                Wallet wallet = walletRepositoryAdapter.findByUserId(1L)
                         .orElseThrow(() -> new RuntimeException("Wallet with ID 1 not found"));
                 
                 Transaction transaction = Transaction.builder()
@@ -45,7 +45,7 @@ public class TransactionSeeder {
                 log.info("Transaction created for wallet ID {}: {}", transaction.getWallet().getId(), transaction.getAmount());
             }
             if(walletTransactionRepositoryAdapter.findById(2L).isEmpty()) {
-                Wallet wallet = walletRepositoryAdapter.findById(1L)
+                Wallet wallet = walletRepositoryAdapter.findByUserId(1L)
                         .orElseThrow(() -> new RuntimeException("Wallet with ID 1 not found"));
                 
                 Transaction transaction = Transaction.builder()

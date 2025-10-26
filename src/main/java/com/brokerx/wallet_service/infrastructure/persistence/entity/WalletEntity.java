@@ -33,7 +33,10 @@ public class WalletEntity {
     private Long userId;
 
     @Column(nullable = false)
-    private BigDecimal balance;
+    private BigDecimal availableBalance;
+
+    @Column(nullable = false)
+    private BigDecimal reservedBalance;
 
     @Column(nullable = false)
     private String currency;
