@@ -3,11 +3,11 @@ package com.brokerx.wallet_service.adapter.web.api;
 import com.brokerx.wallet_service.adapter.web.dto.ApiResponse;
 import com.brokerx.wallet_service.adapter.web.dto.WalletOperationRequest;
 import com.brokerx.wallet_service.application.port.in.command.WalletSuccess;
+import com.brokerx.wallet_service.application.port.in.command.PositionSuccess;
 import com.brokerx.wallet_service.application.port.in.command.TransactionSuccess;
 import com.brokerx.wallet_service.application.port.in.useCase.WalletUseCase;
 import com.brokerx.wallet_service.application.port.in.useCase.WalletWithIdempotencyUseCase;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 
 
@@ -56,7 +57,19 @@ public class WalletController {
                 "Transactions retrieved successfully",
                 transactions));
     }
-    
+
+    @GetMapping("/positions")
+    public ResponseEntity<ApiResponse<List<PositionSuccess>>> getPositions(Authentication authentication) {
+        String userId = authentication.getPrincipal().toString();
+        List<PositionSuccess> positions = walletUseCase.getPositionsByUserId(Long.parseLong(userId));
+
+        return ResponseEntity.ok(new ApiResponse<>(
+                "SUCCESS",
+                null,
+                "Positions retrieved successfully",
+                positions));
+    }
+
 
     @PostMapping("/credit")
     public ResponseEntity<ApiResponse<Map<String, String>>> credit(@RequestBody WalletOperationRequest payload,

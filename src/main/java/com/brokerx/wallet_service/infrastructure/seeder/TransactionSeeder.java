@@ -1,7 +1,7 @@
 package com.brokerx.wallet_service.infrastructure.seeder;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 
 import org.springframework.core.annotation.Order;
 import org.slf4j.Logger;
@@ -38,8 +38,8 @@ public class TransactionSeeder {
                         .status(TransactionStatus.SETTLED)
                         .isSettled(true)
                         .type(TransactionType.CREDIT)
-                        .settledAt(LocalDate.of(2023, 1, 1))
-                        .createdAt(LocalDate.of(2023, 1, 1))
+                        .settledAt(Instant.ofEpochSecond(1672537600)) // 2023-01-01T00:00:00Z
+                        .createdAt(Instant.ofEpochSecond(1672537600)) // 2023-01-01T00:00:00Z
                         .build();
                 walletTransactionRepositoryAdapter.save(transaction);
                 log.info("Transaction created for wallet ID {}: {}", transaction.getWallet().getId(), transaction.getAmount());
@@ -49,13 +49,13 @@ public class TransactionSeeder {
                         .orElseThrow(() -> new RuntimeException("Wallet with ID 1 not found"));
                 
                 Transaction transaction = Transaction.builder()
-                        .amount(BigDecimal.valueOf(250))
+                        .amount(BigDecimal.valueOf(500))
                         .wallet(wallet)
                         .status(TransactionStatus.SETTLED)
                         .isSettled(true)
                         .type(TransactionType.DEBIT)
-                        .settledAt(LocalDate.of(2023, 1, 2))
-                        .createdAt(LocalDate.of(2023, 1, 2))
+                        .settledAt(Instant.ofEpochSecond(1672624000)) // 2023-01-02T00:00:00Z
+                        .createdAt(Instant.ofEpochSecond(1672624000)) // 2023-01-02T00:00:00Z
                         .build();
                 walletTransactionRepositoryAdapter.save(transaction);
                 log.info("Transaction created for wallet ID {}: {}", transaction.getWallet().getId(), transaction.getAmount());

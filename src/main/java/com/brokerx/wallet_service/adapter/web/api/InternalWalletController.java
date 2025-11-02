@@ -1,7 +1,9 @@
 package com.brokerx.wallet_service.adapter.web.api;
 
 import com.brokerx.wallet_service.application.port.in.command.WalletSuccess;
+import com.brokerx.wallet_service.application.port.in.useCase.OrderWalletUseCase;
 import com.brokerx.wallet_service.application.port.in.useCase.WalletUseCase;
+import com.brokerx.wallet_service.adapter.web.dto.PositionResponse;
 import com.brokerx.wallet_service.adapter.web.dto.WalletResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,10 @@ import java.math.BigDecimal;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 /**
  * Internal controller to handle wallet-related requests from other microservices.
@@ -24,10 +30,10 @@ import org.springframework.web.bind.annotation.*;
 public class InternalWalletController {
 
     private final WalletUseCase walletUseCase;
+    private final OrderWalletUseCase orderWalletUseCase;
 
     /**
      * Fetch the wallet ID for a given user ID.
-     * Used by other microservices to get the wallet ID from the user ID.
      */
     @GetMapping("{userId}")
     public ResponseEntity<WalletResponse> getWalletIdByUserId(@PathVariable Long userId) {
@@ -40,10 +46,8 @@ public class InternalWalletController {
                 : ResponseEntity.notFound().build();
     }
 
-
     /**
      * Fetch the user ID for a given wallet ID.
-     * Used by other microservices to get the user ID from the wallet ID.
      */
     @PostMapping("/debit/{userId}/{amount}")
     public void debitWallet(@PathVariable Long userId, @PathVariable BigDecimal amount) {
@@ -53,10 +57,28 @@ public class InternalWalletController {
 
     /**
      * Credit the wallet of a user by a specified amount.
-     * Used by other microservices to add funds to a user's wallet.
      */
     @PostMapping("/credit/{userId}/{amount}")
     public void creditWallet(@PathVariable Long userId, @PathVariable BigDecimal amount) {
         walletUseCase.credit(userId, amount);
     }
+
+    /** Execute a buy order */
+    @PostMapping("/execute/buy")
+    public void executeBUY(@RequestBody PositionResponse entity) {
+        orderWalletUseCase.executeOrder(entity.userId(), entity.symbol(), entity.side(), entity.quantity(), entity.price(), entity.orderId());
+    }
+
+
+    /** Execute a sell order */
+    @PostMapping("/execute/sell")
+    public void executeSELL(@RequestBody PositionResponse entity) {
+        orderWalletUseCase.executeOrder(entity.userId(), entity.symbol(), entity.side(), entity.quantity(), entity.price(), entity.orderId());
+    }
+
+    @PostMapping("/reserve/{userId}/{amount}")
+    public void reserveAmount(@PathVariable Long userId, @PathVariable BigDecimal amount) {
+        orderWalletUseCase.reserveFundsForWallet(userId, amount);
+    }
+    
 }

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -62,7 +62,7 @@ class TransactionRepositoryIntegrationTest {
                 .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .amount(BigDecimal.valueOf(100.0))
                 .isSettled(false)
                 .build();
@@ -88,8 +88,8 @@ class TransactionRepositoryIntegrationTest {
                 .wallet(wallet2)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
-                .createdAt(LocalDate.now())
-                .settledAt(LocalDate.now())
+                .createdAt(Instant.now())
+                .settledAt(Instant.now())
                 .amount(BigDecimal.valueOf(200.0))
                 .isSettled(true)
                 .build();
@@ -98,7 +98,7 @@ class TransactionRepositoryIntegrationTest {
                 .wallet(wallet2)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .amount(BigDecimal.valueOf(50.0))
                 .isSettled(false)
                 .build();
@@ -107,8 +107,8 @@ class TransactionRepositoryIntegrationTest {
                 .wallet(wallet3) // Différent wallet
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
-                .createdAt(LocalDate.now())
-                .settledAt(LocalDate.now())
+                .createdAt(Instant.now())
+                .settledAt(Instant.now())
                 .amount(BigDecimal.valueOf(300.0))
                 .isSettled(true)
                 .build();
@@ -132,8 +132,8 @@ class TransactionRepositoryIntegrationTest {
                 .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
-                .createdAt(LocalDate.now())
-                .settledAt(LocalDate.now())
+                .createdAt(Instant.now())
+                .settledAt(Instant.now())
                 .amount(BigDecimal.valueOf(500.0))
                 .isSettled(true)
                 .build();
@@ -156,7 +156,7 @@ class TransactionRepositoryIntegrationTest {
                 .wallet(wallet)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .amount(BigDecimal.valueOf(150.0))
                 .isSettled(false)
                 .build();
@@ -178,7 +178,7 @@ class TransactionRepositoryIntegrationTest {
                 .wallet(wallet)
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .amount(BigDecimal.valueOf(250.0))
                 .isSettled(false)
                 .build();
@@ -187,7 +187,7 @@ class TransactionRepositoryIntegrationTest {
 
         // Mettre à jour le statut
         saved.setStatus(TransactionStatus.SETTLED);
-        saved.setSettledAt(LocalDate.now());
+        saved.setSettledAt(Instant.now());
         saved.setSettled(true);
         transactionRepository.save(saved);
 
@@ -205,7 +205,7 @@ class TransactionRepositoryIntegrationTest {
                 .wallet(wallet)
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.FAILED)
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .amount(BigDecimal.valueOf(75.0))
                 .isSettled(false)
                 .build();

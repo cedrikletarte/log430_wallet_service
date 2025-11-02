@@ -63,6 +63,12 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 			<version>3.5.6</version>
 		</dependency>
+
+		<!-- Kafka for event-driven architecture -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

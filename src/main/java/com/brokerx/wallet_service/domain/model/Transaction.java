@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +18,8 @@ public class Transaction {
     private Wallet wallet;
     private TransactionType type;
     private TransactionStatus status;
-    private LocalDate createdAt;
-    private LocalDate settledAt;
+    private Instant createdAt;
+    private Instant settledAt;
     private BigDecimal amount;
     private boolean isSettled;
 }

@@ -1,11 +1,14 @@
 package com.brokerx.wallet_service.application.service;
 
+import com.brokerx.wallet_service.application.port.in.command.PositionSuccess;
 import com.brokerx.wallet_service.application.port.in.command.TransactionSuccess;
 import com.brokerx.wallet_service.application.port.in.command.WalletSuccess;
 import com.brokerx.wallet_service.application.port.in.useCase.WalletUseCase;
 import com.brokerx.wallet_service.application.port.out.WalletRepositoryPort;
+import com.brokerx.wallet_service.application.port.out.PositionRepositoryPort;
 import com.brokerx.wallet_service.application.port.out.TransactionRepositoryPort;
 import com.brokerx.wallet_service.domain.model.Wallet;
+import com.brokerx.wallet_service.domain.model.Position;
 import com.brokerx.wallet_service.domain.model.Transaction;
 import com.brokerx.wallet_service.domain.model.TransactionType;
 import com.brokerx.wallet_service.domain.model.TransactionStatus;
@@ -13,7 +16,7 @@ import com.brokerx.wallet_service.domain.service.WalletTransactionValidator;
 import com.brokerx.wallet_service.domain.service.WalletValidator;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -27,11 +30,14 @@ public class WalletService implements WalletUseCase {
 
     private final WalletRepositoryPort walletRepositoryPort;
     private final TransactionRepositoryPort walletTransactionRepositoryPort;
+    private final PositionRepositoryPort positionRepositoryPort;
 
     public WalletService(WalletRepositoryPort walletRepositoryPort,
-            TransactionRepositoryPort walletTransactionRepositoryPort) {
+            TransactionRepositoryPort walletTransactionRepositoryPort,
+            PositionRepositoryPort positionRepositoryPort) {
         this.walletRepositoryPort = walletRepositoryPort;
         this.walletTransactionRepositoryPort = walletTransactionRepositoryPort;
+        this.positionRepositoryPort = positionRepositoryPort;
     }
 
     @Override
@@ -57,8 +63,8 @@ public class WalletService implements WalletUseCase {
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.SETTLED)
                 .amount(amount)
-                .createdAt(LocalDate.now())
-                .settledAt(LocalDate.now())
+                .createdAt(Instant.now())
+                .settledAt(Instant.now())
                 .isSettled(true)
                 .wallet(wallet)
                 .build();
@@ -96,8 +102,8 @@ public class WalletService implements WalletUseCase {
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .amount(amount)
-                .createdAt(LocalDate.now())
-                .settledAt(LocalDate.now())
+                .createdAt(Instant.now())
+                .settledAt(Instant.now())
                 .isSettled(true)
                 .wallet(wallet)
                 .build();
@@ -153,6 +159,23 @@ public class WalletService implements WalletUseCase {
                         .settledAt(tx.getSettledAt())
                         .amount(tx.getAmount())
                         .isSettled(tx.isSettled())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<PositionSuccess> getPositionsByUserId(Long userId) {
+        Wallet wallet = walletRepositoryPort.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Wallet not found for userId: " + userId));
+
+        List<Position> positions = positionRepositoryPort.findByWalletId(wallet.getId());
+
+        return positions.stream()
+                .map(pos -> PositionSuccess.builder()
+                        .id(pos.getId())
+                        .symbol(pos.getSymbol())
+                        .quantity(pos.getQuantity())
+                        .totalCost(pos.getTotalCost())
                         .build())
                 .toList();
     }

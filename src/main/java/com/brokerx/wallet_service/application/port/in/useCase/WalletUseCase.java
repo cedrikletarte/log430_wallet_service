@@ -1,6 +1,7 @@
 package com.brokerx.wallet_service.application.port.in.useCase;
 
 import com.brokerx.wallet_service.application.port.in.command.WalletSuccess;
+import com.brokerx.wallet_service.application.port.in.command.PositionSuccess;
 import com.brokerx.wallet_service.application.port.in.command.TransactionSuccess;
 
 import java.math.BigDecimal;
@@ -14,4 +15,6 @@ public interface WalletUseCase {
     WalletSuccess getWalletByUserId(Long userId);
     
     List<TransactionSuccess> getTransactionsByUserId(Long userId);
+
+    List<PositionSuccess> getPositionsByUserId(Long userId);
 }

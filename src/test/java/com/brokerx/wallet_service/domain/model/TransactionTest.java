@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.Instant;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ class TransactionTest {
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("100.00"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -50,7 +50,7 @@ class TransactionTest {
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("50.00"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -64,7 +64,7 @@ class TransactionTest {
 
     @Test
     void shouldCreateSettledTransaction() {
-        LocalDate now = LocalDate.now();
+        Instant now = Instant.now();
         Wallet wallet = Wallet.builder().id(3L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
@@ -92,7 +92,7 @@ class TransactionTest {
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.FAILED)
                 .amount(new BigDecimal("75.00"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -110,7 +110,7 @@ class TransactionTest {
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("150.00"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -119,7 +119,7 @@ class TransactionTest {
 
         // Mise à jour vers SETTLED
         transaction.setStatus(TransactionStatus.SETTLED);
-        transaction.setSettledAt(LocalDate.now());
+        transaction.setSettledAt(Instant.now());
         transaction.setSettled(true);
 
         assertEquals(TransactionStatus.SETTLED, transaction.getStatus());
@@ -136,7 +136,7 @@ class TransactionTest {
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("0.01"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -145,7 +145,7 @@ class TransactionTest {
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("99999.99"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -162,8 +162,8 @@ class TransactionTest {
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.SETTLED)
                 .amount(new BigDecimal("123.45"))
-                .createdAt(LocalDate.now())
-                .settledAt(LocalDate.now())
+                .createdAt(Instant.now())
+                .settledAt(Instant.now())
                 .isSettled(true)
                 .build();
 
@@ -172,7 +172,7 @@ class TransactionTest {
 
     @Test
     void shouldHandleAllTransactionStatuses() {
-        LocalDate now = LocalDate.now();
+        Instant now = Instant.now();
         Wallet wallet = Wallet.builder().id(8L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
 
         Transaction pending = Transaction.builder()
@@ -217,7 +217,7 @@ class TransactionTest {
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("100.00"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -226,7 +226,7 @@ class TransactionTest {
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("50.00"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -243,7 +243,7 @@ class TransactionTest {
         transaction.setWallet(wallet);
         transaction.setType(TransactionType.CREDIT);
         transaction.setStatus(TransactionStatus.PENDING);
-        transaction.setCreatedAt(LocalDate.now());
+        transaction.setCreatedAt(Instant.now());
         transaction.setAmount(new BigDecimal("250.00"));
         transaction.setSettled(false);
 
@@ -265,7 +265,7 @@ class TransactionTest {
                 .type(TransactionType.CREDIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("300.00"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -276,7 +276,7 @@ class TransactionTest {
 
         // Transition vers SETTLED
         transaction.setStatus(TransactionStatus.SETTLED);
-        transaction.setSettledAt(LocalDate.now());
+        transaction.setSettledAt(Instant.now());
         transaction.setSettled(true);
 
         // État final
@@ -294,7 +294,7 @@ class TransactionTest {
                 .type(TransactionType.DEBIT)
                 .status(TransactionStatus.PENDING)
                 .amount(new BigDecimal("400.00"))
-                .createdAt(LocalDate.now())
+                .createdAt(Instant.now())
                 .isSettled(false)
                 .build();
 
@@ -313,7 +313,7 @@ class TransactionTest {
 
     @Test
     void shouldHandleSettledTransactionWithSettledDate() {
-        LocalDate now = LocalDate.now();
+        Instant now = Instant.now();
         Wallet wallet = Wallet.builder().id(13L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = Transaction.builder()
@@ -349,7 +349,7 @@ class TransactionTest {
 
     @Test
     void shouldCreateTransactionWithAllArgsConstructor() {
-        LocalDate now = LocalDate.now();
+        Instant now = Instant.now();
         Wallet wallet = Wallet.builder().id(100L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = new Transaction(
