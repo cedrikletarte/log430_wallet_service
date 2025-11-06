@@ -6,6 +6,9 @@ import com.brokerx.wallet_service.domain.model.Transaction;
 
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -29,7 +32,7 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
     }
 
     @Override
-    public java.util.List<Transaction> findByWalletId(Long walletId) {
+    public List<Transaction> findByWalletId(Long walletId) {
         var entities = springWalletRepository.findByWalletId(walletId);
         return entities.stream()
                 .map(walletTransactionMapper::toDomain)
@@ -37,8 +40,14 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
     }
 
     @Override
-    public java.util.Optional<Transaction> findById(Long id) {
+    public Optional<Transaction> findById(Long id) {
         var entity = springWalletRepository.findById(id);
         return entity.map(walletTransactionMapper::toDomain);
+    }
+
+    @Override
+    public Transaction findByOrderId(Long orderId) {
+        var entity = springWalletRepository.findByOrderId(orderId);
+        return walletTransactionMapper.toDomain(entity);
     }
 }

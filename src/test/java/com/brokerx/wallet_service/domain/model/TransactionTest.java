@@ -353,18 +353,20 @@ class TransactionTest {
         Wallet wallet = Wallet.builder().id(100L).userId(1L).currency("USD").availableBalance(BigDecimal.ZERO).build();
         
         Transaction transaction = new Transaction(
-                1L,
-                wallet,
+                1L,           // id
+                wallet,       // wallet
+                123L,         // orderId
                 TransactionType.CREDIT,
                 TransactionStatus.SETTLED,
-                now,
-                now,
+                now,          // createdAt
+                now,          // settledAt
                 new BigDecimal("600.00"),
-                true
+                true          // isSettled
         );
 
         assertEquals(1L, transaction.getId());
         assertEquals(100L, transaction.getWallet().getId());
+        assertEquals(123L, transaction.getOrderId());
         assertEquals(TransactionType.CREDIT, transaction.getType());
         assertEquals(TransactionStatus.SETTLED, transaction.getStatus());
         assertEquals(now, transaction.getCreatedAt());

@@ -42,6 +42,9 @@ public class TransactionEntity {
     @JoinColumn(name = "wallet_id", nullable = false)
     private WalletEntity wallet;
 
+    @Column(name = "order_id", nullable = true)
+    private Long orderId;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TransactionType type;

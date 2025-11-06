@@ -14,18 +14,19 @@ public class TransactionMapper {
         this.walletMapper = walletMapper;
     }
 
-    public TransactionEntity toEntity(Transaction walletTransaction) {
-        if (walletTransaction == null)
+    public TransactionEntity toEntity(Transaction transaction) {
+        if (transaction == null)
             return null;
         return TransactionEntity.builder()
-                .id(walletTransaction.getId())
-                .wallet(walletMapper.toEntity(walletTransaction.getWallet()))
-                .type(walletTransaction.getType())
-                .status(walletTransaction.getStatus())
-                .createdAt(walletTransaction.getCreatedAt())
-                .settledAt(walletTransaction.getSettledAt())
-                .amount(walletTransaction.getAmount())
-                .isSettled(walletTransaction.isSettled())
+                .id(transaction.getId())
+                .wallet(walletMapper.toEntity(transaction.getWallet()))
+                .type(transaction.getType())
+                .status(transaction.getStatus())
+                .createdAt(transaction.getCreatedAt())
+                .settledAt(transaction.getSettledAt())
+                .amount(transaction.getAmount())
+                .isSettled(transaction.isSettled())
+                .orderId(transaction.getOrderId())
                 .build();
     }
 
@@ -41,6 +42,7 @@ public class TransactionMapper {
                 .settledAt(entity.getSettledAt())
                 .amount(entity.getAmount())
                 .isSettled(entity.isSettled())
+                .orderId(entity.getOrderId())
                 .build();
     }
 }

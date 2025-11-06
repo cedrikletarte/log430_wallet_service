@@ -13,7 +13,7 @@ public interface OrderWalletUseCase {
      * @param walletId The wallet ID
      * @param amount The amount to reserve
      */
-    void reserveFundsForWallet(Long walletId, BigDecimal amount);
+    void reserveFundsForWallet(Long walletId, BigDecimal amount, Long orderId);
     
     /**
      * Refund a cancelled order by releasing reserved funds

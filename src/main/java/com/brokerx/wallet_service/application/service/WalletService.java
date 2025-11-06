@@ -40,24 +40,35 @@ public class WalletService implements WalletUseCase {
         this.positionRepositoryPort = positionRepositoryPort;
     }
 
+    /**
+     * Get or create wallet for a user (thread-safe)
+     * Synchronized to prevent race conditions when creating wallet for new users
+     */
+    private synchronized Wallet getOrCreateWallet(Long userId) {
+        return walletRepositoryPort.findByUserId(userId)
+                .orElseGet(() -> {
+                    // Double-check after acquiring lock
+                    return walletRepositoryPort.findByUserId(userId)
+                            .orElseGet(() -> {
+                                logger.info("Wallet not found for userId: {}, creating new wallet", userId);
+                                Wallet created = Wallet.builder()
+                                        .userId(userId)
+                                        .currency("USD")
+                                        .availableBalance(BigDecimal.ZERO)
+                                        .reservedBalance(BigDecimal.ZERO)
+                                        .build();
+                                WalletValidator.validateCreation(created);
+                                return walletRepositoryPort.save(created);
+                            });
+                });
+    }
+
     @Override
     public void debit(Long userId, BigDecimal amount) {
         logger.info("Debit request - UserId: {}, Amount: {}", userId, amount);
         
         validateAmount(amount);
-        Wallet wallet = walletRepositoryPort.findByUserId(userId)
-                .orElseGet(() -> {
-                    logger.info("Wallet not found for userId: {}, creating new wallet", userId);
-                    Wallet created = Wallet.builder()
-                            .userId(userId)
-                            .currency("USD")
-                            .availableBalance(BigDecimal.ZERO)
-                            .reservedBalance(BigDecimal.ZERO)
-                            .build();
-                    // Validate creation then persist to obtain an id before debit operation
-                    WalletValidator.validateCreation(created);
-                    return walletRepositoryPort.save(created);
-                });
+        Wallet wallet = getOrCreateWallet(userId);
 
         Transaction transaction = Transaction.builder()
                 .type(TransactionType.DEBIT)
@@ -85,18 +96,7 @@ public class WalletService implements WalletUseCase {
         logger.info("Credit request - UserId: {}, Amount: {}", userId, amount);
         
         validateAmount(amount);
-        Wallet wallet = walletRepositoryPort.findByUserId(userId)
-                .orElseGet(() -> {
-                    logger.info("Wallet not found for userId: {}, creating new wallet", userId);
-                    Wallet created = Wallet.builder()
-                            .userId(userId)
-                            .currency("USD")
-                            .availableBalance(BigDecimal.ZERO)
-                            .reservedBalance(BigDecimal.ZERO)
-                            .build();
-                    WalletValidator.validateCreation(created);
-                    return walletRepositoryPort.save(created);
-                });
+        Wallet wallet = getOrCreateWallet(userId);
 
         Transaction transaction = Transaction.builder()
                 .type(TransactionType.CREDIT)
@@ -122,18 +122,7 @@ public class WalletService implements WalletUseCase {
     public WalletSuccess getWalletByUserId(Long userId) {
         logger.info("Get wallet request - UserId: {}", userId);
         
-        Wallet wallet = walletRepositoryPort.findByUserId(userId)
-                .orElseGet(() -> {
-                    logger.info("Wallet not found for userId: {}, creating new wallet", userId);
-                    Wallet created = Wallet.builder()
-                            .userId(userId)
-                            .currency("USD")
-                            .availableBalance(BigDecimal.ZERO)
-                            .reservedBalance(BigDecimal.ZERO)
-                            .build();
-                    WalletValidator.validateCreation(created);
-                    return walletRepositoryPort.save(created);
-                });
+        Wallet wallet = getOrCreateWallet(userId);
 
         return WalletSuccess.builder()
                 .id(wallet.getId())

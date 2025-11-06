@@ -16,6 +16,7 @@ import lombok.Builder;
 public class Transaction {
     private Long id;
     private Wallet wallet;
+    private Long orderId;
     private TransactionType type;
     private TransactionStatus status;
     private Instant createdAt;

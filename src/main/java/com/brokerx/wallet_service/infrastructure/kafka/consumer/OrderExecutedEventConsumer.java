@@ -2,16 +2,20 @@ package com.brokerx.wallet_service.infrastructure.kafka.consumer;
 
 import com.brokerx.wallet_service.application.port.in.useCase.OrderWalletUseCase;
 import com.brokerx.wallet_service.infrastructure.kafka.dto.OrderExecutedEvent;
+import com.brokerx.wallet_service.infrastructure.kafka.dto.WalletSettledEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Kafka consumer for handling OrderExecuted events from order_service
  * This is an inbound adapter in hexagonal architecture
- * Handles final settlement of matched orders
+ * Handles final settlement of matched orders and publishes WalletSettled event
+ * Part of the Saga Choreography pattern
  */
 @Slf4j
 @Component
@@ -19,6 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderExecutedEventConsumer {
 
     private final OrderWalletUseCase orderWalletUseCase;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+    
+    @Value("${kafka.topic.wallet-settled:wallet.settled}")
+    private String walletSettledTopic;
 
     @KafkaListener(
         topics = "${kafka.topic.order-executed}",
@@ -44,6 +52,23 @@ public class OrderExecutedEventConsumer {
             
             log.info("✅ Order settlement completed for orderId {} ({})", 
                     event.orderId(), event.side());
+            
+            // Publish WalletSettled event for Saga Choreography
+            // This ensures wallet is updated BEFORE notification is sent
+            WalletSettledEvent settledEvent = new WalletSettledEvent(
+                    event.orderId(),
+                    event.walletId(),
+                    event.side(),
+                    event.stockSymbol(),
+                    event.quantity(),
+                    event.executionPrice(),
+                    event.totalAmount()
+            );
+            
+            kafkaTemplate.send(walletSettledTopic, event.stockSymbol(), settledEvent);
+            log.info("📤 Published WalletSettled event for orderId {} to topic {}", 
+                    event.orderId(), walletSettledTopic);
+            
         } catch (Exception e) {
             log.error("❌ Failed to process OrderExecuted event for orderId {}: {}",
                     event.orderId(), e.getMessage(), e);

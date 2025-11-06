@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface SpringTransactionRepository extends JpaRepository<TransactionEntity, Long> {
 
     List<TransactionEntity> findByWalletId(Long walletId);
+
+    TransactionEntity findByOrderId(Long orderId);
 }

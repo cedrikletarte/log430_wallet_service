@@ -76,9 +76,9 @@ public class InternalWalletController {
         orderWalletUseCase.executeOrder(entity.userId(), entity.symbol(), entity.side(), entity.quantity(), entity.price(), entity.orderId());
     }
 
-    @PostMapping("/reserve/{userId}/{amount}")
-    public void reserveAmount(@PathVariable Long userId, @PathVariable BigDecimal amount) {
-        orderWalletUseCase.reserveFundsForWallet(userId, amount);
+    @PostMapping("/reserve/{userId}/{amount}/{orderId}")
+    public void reserveAmount(@PathVariable Long userId, @PathVariable BigDecimal amount, @PathVariable Long orderId) {
+        orderWalletUseCase.reserveFundsForWallet(userId, amount, orderId);
     }
     
 }

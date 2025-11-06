@@ -36,9 +36,9 @@ public class OrderWalletService implements OrderWalletUseCase {
 
     @Override
     @Transactional
-    public void reserveFundsForWallet(Long walletId, BigDecimal amount) {
-        log.info("Reserving funds for order: walletId={}, amount={}", walletId, amount);
-        
+    public void reserveFundsForWallet(Long walletId, BigDecimal amount, Long orderId) {
+        log.info("Reserving funds for order: walletId={}, amount={}, orderId={}", walletId, amount, orderId);
+
         Wallet wallet = walletRepositoryPort.findById(walletId)
                 .orElseThrow(() -> new IllegalArgumentException("Wallet not found for walletId: " + walletId));
         
@@ -61,6 +61,7 @@ public class OrderWalletService implements OrderWalletUseCase {
                 .createdAt(Instant.now())
                 .isSettled(false)
                 .wallet(wallet)
+                .orderId(orderId)
                 .build();
         
         transactionRepositoryPort.save(transaction);
@@ -114,8 +115,8 @@ public class OrderWalletService implements OrderWalletUseCase {
         BigDecimal amount = price.multiply(BigDecimal.valueOf(quantity));
         
         if ("BUY".equals(side)) {
-            // For BUY: release reserved funds
-            wallet.setReservedBalance(wallet.getReservedBalance().subtract(amount));
+            // For BUY: debit the wallet
+            wallet.setAvailableBalance(wallet.getAvailableBalance().subtract(amount));
             
             // Create settled debit transaction
             Transaction transaction = Transaction.builder()
@@ -201,22 +202,48 @@ public class OrderWalletService implements OrderWalletUseCase {
         
         if ("BUY".equals(side)) {
             // For BUY: release reserved funds and add shares to position
-            wallet.setReservedBalance(wallet.getReservedBalance().subtract(totalAmount));
+            Transaction transaction = transactionRepositoryPort.findByOrderId(orderId);
+
+            if (transaction == null) {
+                throw new IllegalArgumentException("Transaction not found for orderId: " + orderId);
+            }
+
+            // Calculate the difference to refund (reserved amount - actual execution amount)
+            BigDecimal refundAmount = transaction.getAmount().subtract(totalAmount);
             
-            // Create settled debit transaction
-            Transaction transaction = Transaction.builder()
-                    .type(TransactionType.DEBIT)
-                    .status(TransactionStatus.SETTLED)
-                    .amount(totalAmount)
-                    .createdAt(Instant.now())
-                    .settledAt(Instant.now())
-                    .isSettled(true)
-                    .wallet(wallet)
-                    .build();
+            // Release all reserved funds
+            wallet.setReservedBalance(wallet.getReservedBalance().subtract(transaction.getAmount()));
+            
+            // Return the difference to available balance
+            wallet.setAvailableBalance(wallet.getAvailableBalance().add(refundAmount));
+
+            // Update transaction amount to actual execution amount and mark as settled
+            transaction.setAmount(totalAmount);
+            transaction.setStatus(TransactionStatus.SETTLED);
+            transaction.setSettledAt(Instant.now());
+            transaction.setSettled(true);
+            
             transactionRepositoryPort.save(transaction);
             
-            log.info("💸 BUY order settled: released {} from reserved balance, added {} shares of {}",
-                    totalAmount, quantity, stockSymbol);
+            // Add shares to position
+            if (positionRepositoryPort.existsByWalletIdAndSymbol(wallet.getId(), stockSymbol)) {
+                Position existingPosition = positionRepositoryPort.findByWalletIdAndSymbol(wallet.getId(), stockSymbol)
+                        .orElseThrow(() -> new IllegalArgumentException("Position not found"));
+                existingPosition.setQuantity(existingPosition.getQuantity() + quantity);
+                existingPosition.setTotalCost(existingPosition.getTotalCost().add(totalAmount));
+                positionRepositoryPort.save(existingPosition);
+            } else {
+                Position newPosition = Position.builder()
+                        .wallet(wallet)
+                        .symbol(stockSymbol)
+                        .quantity(quantity)
+                        .totalCost(totalAmount)
+                        .build();
+                positionRepositoryPort.save(newPosition);
+            }
+            
+            log.info("💸 BUY order settled: released {} from reserved, debited {} (actual cost), refunded {}, added {} shares",
+                    transaction.getAmount(), totalAmount, refundAmount, quantity);
             
         } else if ("SELL".equals(side)) {
             // For SELL: credit the wallet and remove shares from position
@@ -234,8 +261,29 @@ public class OrderWalletService implements OrderWalletUseCase {
                     .build();
             transactionRepositoryPort.save(transaction);
             
-            log.info("💰 SELL order settled: credited {} to available balance, removed {} shares of {}",
-                    totalAmount, quantity, stockSymbol);
+            // Remove shares from position
+            Position existingPosition = positionRepositoryPort.findByWalletIdAndSymbol(wallet.getId(), stockSymbol)
+                    .orElseThrow(() -> new IllegalArgumentException("Insufficient shares to sell"));
+
+            if (existingPosition.getQuantity() < quantity) {
+                throw new IllegalArgumentException("Insufficient shares to sell");
+            }
+
+            existingPosition.setQuantity(existingPosition.getQuantity() - quantity);
+            
+            // Calculate proportional cost to remove
+            BigDecimal costPerShare = existingPosition.getTotalCost().divide(
+                BigDecimal.valueOf(existingPosition.getQuantity() + quantity), 
+                10, 
+                RoundingMode.HALF_UP
+            );
+            BigDecimal costToRemove = costPerShare.multiply(BigDecimal.valueOf(quantity));
+            existingPosition.setTotalCost(existingPosition.getTotalCost().subtract(costToRemove));
+            
+            positionRepositoryPort.save(existingPosition);
+            
+            log.info("💰 SELL order settled: credited {} to available balance, removed {} shares",
+                    totalAmount, quantity);
         }
         
         WalletValidator.validateUpdate(wallet);
