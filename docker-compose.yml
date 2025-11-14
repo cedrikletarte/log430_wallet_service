@@ -20,8 +20,8 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - GATEWAY_SECRET=${GATEWAY_SECRET}
       - SERVICE_SECRET=${SERVICE_SECRET}
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - KAFKA_TOPIC_ORDER_EXECUTED=order.executed
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092 # adresse du broker Kafka
+      - KAFKA_TOPIC_ORDER_EXECUTED=order.executed # topic des ordres exécutés
     restart: always
     networks:
       - brokerx-network
@@ -30,11 +30,10 @@ services:
     image: postgres:17
     container_name: wallet-postgres
     restart: always
-    shm_size: 128mb
     environment:
       POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
       POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-      POSTGRES_DB: postgres
+      POSTGRES_DB: ${SPRING_DATASOURCE_DB}
     expose:
       - "5432"
     volumes:

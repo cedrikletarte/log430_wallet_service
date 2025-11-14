@@ -1,8 +1,8 @@
 package com.brokerx.wallet_service.adapter.web;
 
 import com.brokerx.wallet_service.adapter.web.dto.ApiResponse;
+import com.brokerx.wallet_service.domain.exception.transaction.TransactionException;
 import com.brokerx.wallet_service.domain.exception.wallet.WalletException;
-import com.brokerx.wallet_service.domain.exception.walletTransaction.WalletTransactionException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +49,8 @@ public class GlobalExceptionHandler {
     /**
      * Handles WalletTransactionException by returning a JSON error response.
      */
-    @ExceptionHandler(WalletTransactionException.class)
-    public ResponseEntity<ApiResponse<Void>> handleWalletTransactionException(WalletTransactionException ex) {
+    @ExceptionHandler(TransactionException.class)
+    public ResponseEntity<ApiResponse<Void>> handleWalletTransactionException(TransactionException ex) {
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(new ApiResponse<>(

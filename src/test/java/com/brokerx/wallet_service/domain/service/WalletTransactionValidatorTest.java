@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
-import com.brokerx.wallet_service.domain.exception.walletTransaction.WalletTransactionException;
+import com.brokerx.wallet_service.domain.exception.transaction.TransactionException;
 import com.brokerx.wallet_service.domain.model.TransactionType;
 import com.brokerx.wallet_service.domain.model.Wallet;
 
@@ -46,7 +46,7 @@ class WalletTransactionValidatorTest {
     void shouldRejectNullWallet() {
         BigDecimal amount = new BigDecimal("100.00");
 
-        WalletTransactionException exception = assertThrows(WalletTransactionException.class,
+        TransactionException exception = assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         null, TransactionType.CREDIT, amount, "USD"));
         assertTrue(exception.getMessage().contains("Wallet is required"));
@@ -57,7 +57,7 @@ class WalletTransactionValidatorTest {
         Wallet wallet = createWalletWithBalance("1000.00");
         BigDecimal amount = new BigDecimal("100.00");
 
-        WalletTransactionException exception = assertThrows(WalletTransactionException.class,
+        TransactionException exception = assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, null, amount, "USD"));
         assertTrue(exception.getMessage().contains("Transaction type is required"));
@@ -68,7 +68,7 @@ class WalletTransactionValidatorTest {
         Wallet wallet = createWalletWithBalance("1000.00");
         BigDecimal amount = new BigDecimal("100.00");
 
-        WalletTransactionException exception = assertThrows(WalletTransactionException.class,
+        TransactionException exception = assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.CREDIT, amount, null));
         assertTrue(exception.getMessage().contains("Currency is required"));
@@ -79,7 +79,7 @@ class WalletTransactionValidatorTest {
         Wallet wallet = createWalletWithBalance("1000.00");
         BigDecimal amount = new BigDecimal("100.00");
 
-        WalletTransactionException exception = assertThrows(WalletTransactionException.class,
+        TransactionException exception = assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.CREDIT, amount, "   "));
         assertTrue(exception.getMessage().contains("Currency is required"));
@@ -89,7 +89,7 @@ class WalletTransactionValidatorTest {
     void shouldRejectNullAmount() {
         Wallet wallet = createWalletWithBalance("1000.00");
 
-        WalletTransactionException exception = assertThrows(WalletTransactionException.class,
+        TransactionException exception = assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.CREDIT, null, "USD"));
         assertTrue(exception.getMessage().contains("Amount is required"));
@@ -100,7 +100,7 @@ class WalletTransactionValidatorTest {
         Wallet wallet = createWalletWithBalance("1000.00");
         BigDecimal amount = BigDecimal.ZERO;
 
-        assertThrows(WalletTransactionException.class,
+        assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.CREDIT, amount, "USD"));
     }
@@ -110,7 +110,7 @@ class WalletTransactionValidatorTest {
         Wallet wallet = createWalletWithBalance("1000.00");
         BigDecimal amount = new BigDecimal("-100.00");
 
-        assertThrows(WalletTransactionException.class,
+        assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.CREDIT, amount, "USD"));
     }
@@ -120,7 +120,7 @@ class WalletTransactionValidatorTest {
         Wallet wallet = createWalletWithBalance("1000.00");
         BigDecimal amount = new BigDecimal("5.00"); // Below MIN_CREDIT of 10.00
 
-        assertThrows(WalletTransactionException.class,
+        assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.CREDIT, amount, "USD"));
     }
@@ -139,7 +139,7 @@ class WalletTransactionValidatorTest {
         Wallet wallet = createWalletWithBalance("1000.00");
         BigDecimal amount = new BigDecimal("15000.00"); // Above MAX_CREDIT of 10000.00
 
-        assertThrows(WalletTransactionException.class,
+        assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.CREDIT, amount, "USD"));
     }
@@ -172,7 +172,7 @@ class WalletTransactionValidatorTest {
         Wallet wallet = createWalletWithBalance("100.00");
         BigDecimal amount = new BigDecimal("200.00");
 
-        assertThrows(WalletTransactionException.class,
+        assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.DEBIT, amount, "USD"));
     }
@@ -201,7 +201,7 @@ class WalletTransactionValidatorTest {
         wallet.setAvailableBalance(null);
         BigDecimal amount = new BigDecimal("100.00");
 
-        WalletTransactionException exception = assertThrows(WalletTransactionException.class,
+        TransactionException exception = assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.DEBIT, amount, "USD"));
         assertTrue(exception.getMessage().contains("Wallet balance is missing"));
@@ -212,7 +212,7 @@ class WalletTransactionValidatorTest {
         Wallet wallet = createWalletWithBalance("0.00");
         BigDecimal amount = new BigDecimal("10.00");
 
-        assertThrows(WalletTransactionException.class,
+        assertThrows(TransactionException.class,
                 () -> WalletTransactionValidator.validateCreation(
                         wallet, TransactionType.DEBIT, amount, "USD"));
     }
