@@ -5,6 +5,7 @@ import com.brokerx.wallet_service.infrastructure.persistence.entity.WalletEntity
 
 import org.springframework.stereotype.Component;
 
+/* Mapper for converting between Wallet and WalletEntity */
 @Component
 public class WalletMapper {
 

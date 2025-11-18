@@ -7,6 +7,7 @@ import lombok.Builder;
 
 import java.math.BigDecimal;
 
+/* Represents a user's wallet with balances and operations */
 @Data
 @Builder
 @NoArgsConstructor

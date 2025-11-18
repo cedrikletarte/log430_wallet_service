@@ -5,6 +5,7 @@ import com.brokerx.wallet_service.infrastructure.persistence.entity.PositionEnti
 
 import org.springframework.stereotype.Component;
 
+/* Mapper for converting between Position and PositionEntity */
 @Component
 public class PositionMapper {
 

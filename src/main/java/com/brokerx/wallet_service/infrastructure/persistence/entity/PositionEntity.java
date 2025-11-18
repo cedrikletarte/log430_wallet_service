@@ -18,7 +18,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/* Entity representing a position in a wallet */
 @Data
 @Builder
 @NoArgsConstructor

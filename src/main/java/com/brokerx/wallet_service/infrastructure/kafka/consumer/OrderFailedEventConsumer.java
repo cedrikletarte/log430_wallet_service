@@ -8,11 +8,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Kafka consumer for handling OrderFailed events from order_service
- * Triggers compensation (rollback) by restoring reserved funds
- * Part of Saga Choreography pattern for distributed transaction management
- */
+/* Kafka consumer for handling OrderFailed events from order_service */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -20,6 +16,7 @@ public class OrderFailedEventConsumer {
 
     private final WalletCompensationService compensationService;
 
+    /* Listens for OrderFailed events and compensates the wallet accordingly */
     @KafkaListener(
         topics = "${kafka.topic.order-failed:order.failed}",
         groupId = "${spring.kafka.consumer.group-id}"

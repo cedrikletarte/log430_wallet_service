@@ -24,6 +24,7 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
         this.walletTransactionMapper = walletTransactionMapper;
     }
 
+    /* Save a wallet transaction */
     @Override
     public Transaction save(Transaction walletTransaction) {
         var entity = walletTransactionMapper.toEntity(walletTransaction);
@@ -31,6 +32,7 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
         return walletTransactionMapper.toDomain(entity);
     }
 
+    /* Find all transactions for a wallet */
     @Override
     public List<Transaction> findByWalletId(Long walletId) {
         var entities = springWalletRepository.findByWalletId(walletId);
@@ -39,12 +41,14 @@ public class TransactionRepositoryAdapter implements TransactionRepositoryPort {
                 .toList();
     }
 
+    /* Find a transaction by its ID */
     @Override
     public Optional<Transaction> findById(Long id) {
         var entity = springWalletRepository.findById(id);
         return entity.map(walletTransactionMapper::toDomain);
     }
 
+    /* Find a transaction by order ID */
     @Override
     public Transaction findByOrderId(Long orderId) {
         var entity = springWalletRepository.findByOrderId(orderId);

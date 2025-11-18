@@ -21,10 +21,7 @@ import java.time.Instant;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Service for handling order-related wallet operations
- * This implements the use case defined in the application layer
- */
+/* Service for handling order-related wallet operations */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -34,6 +31,7 @@ public class OrderWalletService implements OrderWalletUseCase {
     private final TransactionRepositoryPort transactionRepositoryPort;
     private final PositionRepositoryPort positionRepositoryPort;
 
+    /* Reserve funds in wallet for an order */
     @Override
     @Transactional
     public void reserveFundsForWallet(Long walletId, BigDecimal amount, Long orderId) {
@@ -70,6 +68,7 @@ public class OrderWalletService implements OrderWalletUseCase {
                 amount, wallet.getAvailableBalance(), wallet.getReservedBalance());
     }
 
+    /* Refund a cancelled order by releasing reserved funds */
     @Override
     @Transactional
     public void refundCancelledOrder(Long walletId, BigDecimal amount, Long orderId) {
@@ -103,6 +102,7 @@ public class OrderWalletService implements OrderWalletUseCase {
                 amount, orderId, wallet.getAvailableBalance(), wallet.getReservedBalance());
     }
 
+    /* Execute an order by updating wallet and positions */
     @Override
     @Transactional
     public void executeOrder(Long userId, String stockSymbol, String side, Integer quantity, BigDecimal price, Long orderId) {
@@ -189,6 +189,7 @@ public class OrderWalletService implements OrderWalletUseCase {
                 orderId, wallet.getAvailableBalance(), wallet.getReservedBalance());
     }
 
+    /* Settle a matched order transaction (using walletId directly from matching service) */
     @Override
     @Transactional
     public void settleMatchedOrder(Long walletId, String side, String stockSymbol,

@@ -2,10 +2,7 @@ package com.brokerx.wallet_service.infrastructure.kafka.dto;
 
 import java.math.BigDecimal;
 
-/**
- * Event published when an order has been settled in the wallet
- * Part of the Saga Choreography pattern - triggers notification after wallet update
- */
+/* Event published when an order has been settled in the wallet */
 public record WalletSettledEvent(
     Long orderId,
     Long walletId,

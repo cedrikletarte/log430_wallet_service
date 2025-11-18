@@ -1,7 +1,7 @@
 package com.brokerx.wallet_service.domain.exception.wallet;
 
 public class WalletException extends RuntimeException {
-    private final String code; // e.g. WALLET_INVALID_DATA, WALLET_NEGATIVE_BALANCE
+    private final String code;
     private final String field;
     private final String value;
 

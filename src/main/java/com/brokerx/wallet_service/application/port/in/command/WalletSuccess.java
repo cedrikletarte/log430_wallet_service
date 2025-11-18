@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+/* Represents a successful wallet operation */
 @Getter
 @Builder
 @AllArgsConstructor

@@ -11,12 +11,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Kafka consumer for handling OrderExecuted events from order_service
- * This is an inbound adapter in hexagonal architecture
- * Handles final settlement of matched orders and publishes WalletSettled event
- * Part of the Saga Choreography pattern
- */
+/* Kafka consumer for handling OrderExecuted events from order_service */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -28,6 +23,7 @@ public class OrderExecutedEventConsumer {
     @Value("${kafka.topic.wallet-settled:wallet.settled}")
     private String walletSettledTopic;
 
+    /* Listens for OrderExecuted events and processes order settlement */
     @KafkaListener(
         topics = "${kafka.topic.order-executed}",
         groupId = "${spring.kafka.consumer.group-id}"

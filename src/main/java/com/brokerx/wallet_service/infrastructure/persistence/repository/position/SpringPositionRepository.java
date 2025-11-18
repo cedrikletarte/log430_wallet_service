@@ -8,24 +8,15 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * JPA repository for Position entity
- */
 @Repository
 public interface SpringPositionRepository extends JpaRepository<PositionEntity, Long> {
 
-    /**
-     * Find a position by wallet ID and stock symbol
-     */
+    /* Find a position by wallet ID and stock symbol */
     Optional<PositionEntity> findByWalletIdAndSymbol(Long walletId, String symbol);
 
-    /**
-     * Find all positions for a wallet
-     */
+    /* Find all positions for a wallet */
     List<PositionEntity> findByWalletId(Long walletId);
 
-    /**
-     * Check if a position exists
-     */
+    /* Check if a position exists */
     boolean existsByWalletIdAndSymbol(Long walletId, String symbol);
 }

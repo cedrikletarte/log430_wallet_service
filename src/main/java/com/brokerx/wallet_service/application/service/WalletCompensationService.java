@@ -17,11 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 
-/**
- * Service responsible for compensating wallet when orders fail
- * Part of Saga Choreography pattern - handles rollback logic
- * Follows hexagonal architecture - application service orchestrating domain and infrastructure
- */
+/* Service responsible for compensating wallet when orders fail */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -64,9 +60,7 @@ public class WalletCompensationService {
         log.info("✅ Wallet compensation completed for order {}", orderId);
     }
 
-    /**
-     * Compensate BUY order: Restore reserved cash to available balance
-     */
+    /* Compensate BUY order: Restore reserved cash to available balance */
     private void compensateBuyOrder(
             Wallet wallet,
             BigDecimal amount,
@@ -101,9 +95,7 @@ public class WalletCompensationService {
                 wallet.getReservedBalance(), wallet.getAvailableBalance());
     }
 
-    /**
-     * Compensate SELL order: Restore shares to position
-     */
+    /* Compensate SELL order: Restore shares to position */
     private void compensateSellOrder(
             Wallet wallet,
             String stockSymbol,

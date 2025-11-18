@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/* Represents a stock position within a user's wallet */
 @Data
 @Builder
 @NoArgsConstructor

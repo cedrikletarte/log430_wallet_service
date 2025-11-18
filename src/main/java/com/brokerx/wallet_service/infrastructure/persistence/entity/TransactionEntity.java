@@ -25,6 +25,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/* Entity representing a transaction in a wallet */
 @Data
 @Builder
 @NoArgsConstructor

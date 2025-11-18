@@ -32,9 +32,7 @@ public class InternalWalletController {
     private final WalletUseCase walletUseCase;
     private final OrderWalletUseCase orderWalletUseCase;
 
-    /**
-     * Fetch the wallet ID for a given user ID.
-     */
+    /* Fetch the wallet ID for a given user ID. */
     @GetMapping("{userId}")
     public ResponseEntity<WalletResponse> getWalletIdByUserId(@PathVariable Long userId) {
         log.debug("Internal request: Getting wallet ID for user ID: {}", userId);
@@ -46,36 +44,33 @@ public class InternalWalletController {
                 : ResponseEntity.notFound().build();
     }
 
-    /**
-     * Fetch the user ID for a given wallet ID.
-     */
+    /* Fetch the user ID for a given wallet ID. */
     @PostMapping("/debit/{userId}/{amount}")
     public void debitWallet(@PathVariable Long userId, @PathVariable BigDecimal amount) {
         walletUseCase.debit(userId, amount);
     }
 
 
-    /**
-     * Credit the wallet of a user by a specified amount.
-     */
+    /* Credit the wallet of a user by a specified amount. */
     @PostMapping("/credit/{userId}/{amount}")
     public void creditWallet(@PathVariable Long userId, @PathVariable BigDecimal amount) {
         walletUseCase.credit(userId, amount);
     }
 
-    /** Execute a buy order */
+    /* Execute a buy order */
     @PostMapping("/execute/buy")
     public void executeBUY(@RequestBody PositionResponse entity) {
         orderWalletUseCase.executeOrder(entity.userId(), entity.symbol(), entity.side(), entity.quantity(), entity.price(), entity.orderId());
     }
 
 
-    /** Execute a sell order */
+    /* Execute a sell order */
     @PostMapping("/execute/sell")
     public void executeSELL(@RequestBody PositionResponse entity) {
         orderWalletUseCase.executeOrder(entity.userId(), entity.symbol(), entity.side(), entity.quantity(), entity.price(), entity.orderId());
     }
 
+    /* Reserve a specific amount in the user's wallet for an order. */
     @PostMapping("/reserve/{userId}/{amount}/{orderId}")
     public void reserveAmount(@PathVariable Long userId, @PathVariable BigDecimal amount, @PathVariable Long orderId) {
         orderWalletUseCase.reserveFundsForWallet(userId, amount, orderId);

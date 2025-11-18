@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Redis adapter implementing the IdempotencyCachePort
- * This is an outbound adapter in hexagonal architecture
- */
+/* Redis adapter implementing the IdempotencyCachePort */
 @Slf4j
 @Service
 public class RedisIdempotencyCacheAdapter implements IdempotencyCachePort {
@@ -22,6 +19,7 @@ public class RedisIdempotencyCacheAdapter implements IdempotencyCachePort {
         this.redisTemplate = redisTemplate;
     }
 
+    /* Checks if the given idempotency key for a user already exists */
     @Override
     public boolean isDuplicate(String idempotencyKey, Long userId) {
         String redisKey = buildRedisKey(idempotencyKey, userId);
@@ -33,12 +31,14 @@ public class RedisIdempotencyCacheAdapter implements IdempotencyCachePort {
         return false;
     }
 
+    /* Retrieves the cached response for the given idempotency key and user */
     @Override
     public Object getCachedResponse(String idempotencyKey, Long userId) {
         String redisKey = buildRedisKey(idempotencyKey, userId);
         return redisTemplate.opsForValue().get(redisKey);
     }
 
+    /* Stores the response in cache with the given idempotency key and user */
     @Override
     public void storeResponse(String idempotencyKey, Long userId, Object response) {
         String redisKey = buildRedisKey(idempotencyKey, userId);
@@ -46,6 +46,7 @@ public class RedisIdempotencyCacheAdapter implements IdempotencyCachePort {
         log.info("Stored idempotency key: key={}, userId={}, ttl={}h", idempotencyKey, userId, IDEMPOTENCY_KEY_TTL.toHours());
     }
 
+    /* Builds the Redis key for a given idempotency key and user */
     private String buildRedisKey(String idempotencyKey, Long userId) {
         return IDEMPOTENCY_KEY_PREFIX + userId + ":" + idempotencyKey;
     }

@@ -40,10 +40,7 @@ public class WalletService implements WalletUseCase {
         this.positionRepositoryPort = positionRepositoryPort;
     }
 
-    /**
-     * Get or create wallet for a user (thread-safe)
-     * Synchronized to prevent race conditions when creating wallet for new users
-     */
+    /* Get or create wallet for a user */
     private synchronized Wallet getOrCreateWallet(Long userId) {
         return walletRepositoryPort.findByUserId(userId)
                 .orElseGet(() -> {
@@ -63,6 +60,7 @@ public class WalletService implements WalletUseCase {
                 });
     }
 
+    /* Debit amount from user's wallet */
     @Override
     public void debit(Long userId, BigDecimal amount) {
         logger.info("Debit request - UserId: {}, Amount: {}", userId, amount);
@@ -91,6 +89,7 @@ public class WalletService implements WalletUseCase {
         logger.info("Debit successful - UserId: {}, Amount: {}, New balance: {}", userId, amount, wallet.getAvailableBalance());
     }
 
+    /* Credit amount to user's wallet */
     @Override
     public void credit(Long userId, BigDecimal amount) {
         logger.info("Credit request - UserId: {}, Amount: {}", userId, amount);
@@ -118,6 +117,7 @@ public class WalletService implements WalletUseCase {
         logger.info("Credit successful - UserId: {}, Amount: {}, New balance: {}", userId, amount, wallet.getAvailableBalance());
     }
 
+    /* Get wallet details by user ID */
     @Override
     public WalletSuccess getWalletByUserId(Long userId) {
         logger.info("Get wallet request - UserId: {}", userId);
@@ -132,6 +132,7 @@ public class WalletService implements WalletUseCase {
                 .build();
     }
 
+    /* Get transactions by user ID */
     @Override
     public List<TransactionSuccess> getTransactionsByUserId(Long userId) {
         Wallet wallet = walletRepositoryPort.findByUserId(userId)
@@ -152,6 +153,7 @@ public class WalletService implements WalletUseCase {
                 .toList();
     }
 
+    /* Get positions by user ID */
     @Override
     public List<PositionSuccess> getPositionsByUserId(Long userId) {
         Wallet wallet = walletRepositoryPort.findByUserId(userId)
@@ -169,6 +171,7 @@ public class WalletService implements WalletUseCase {
                 .toList();
     }
 
+    /* Validate that the amount is positive */
     private void validateAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             logger.warn("Invalid amount provided: {}", amount);

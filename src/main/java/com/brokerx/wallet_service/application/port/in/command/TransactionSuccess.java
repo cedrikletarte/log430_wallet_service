@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+/* Represents a successful transaction operation */
 @Getter
 @Builder
 @AllArgsConstructor

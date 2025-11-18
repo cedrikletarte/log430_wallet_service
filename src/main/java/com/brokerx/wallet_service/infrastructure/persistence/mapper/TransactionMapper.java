@@ -5,6 +5,7 @@ import com.brokerx.wallet_service.infrastructure.persistence.entity.TransactionE
 
 import org.springframework.stereotype.Component;
 
+/* Mapper for converting between Transaction and TransactionEntity */
 @Component
 public class TransactionMapper {
 

@@ -23,23 +23,26 @@ public class PositionRepositoryAdapter implements PositionRepositoryPort {
         this.positionMapper = positionMapper;
     }
 
+    /* Saves a Position to the repository */
     @Override
     public Position save(Position position) {
         return positionMapper.toDomain(springPositionRepository.save(positionMapper.toEntity(position)));
     }
 
+    /* Finds a Position by its ID */
     @Override
     public Optional<Position> findById(Long id) {
         return springPositionRepository.findById(id).map(positionMapper::toDomain);
     }
 
-
+    /* Finds a Position by wallet ID and symbol */
     @Override
     public Optional<Position> findByWalletIdAndSymbol(Long walletId, String symbol) {
         return springPositionRepository.findByWalletIdAndSymbol(walletId, symbol)
                 .map(positionMapper::toDomain);
     }
 
+    /* Finds all Positions by wallet ID */
     @Override
     public List<Position> findByWalletId(Long walletId) {
         return springPositionRepository.findByWalletId(walletId).stream()
@@ -47,11 +50,13 @@ public class PositionRepositoryAdapter implements PositionRepositoryPort {
                 .toList();
     }
 
+    /* Deletes a Position from the repository */
     @Override
     public void delete(Position position) {
         springPositionRepository.delete(positionMapper.toEntity(position));
     }
 
+    /* Checks if a Position exists by wallet ID and symbol */
     @Override
     public boolean existsByWalletIdAndSymbol(Long walletId, String symbol) {
         return springPositionRepository.existsByWalletIdAndSymbol(walletId, symbol);

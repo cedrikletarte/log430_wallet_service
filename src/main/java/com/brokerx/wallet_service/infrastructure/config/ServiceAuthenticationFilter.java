@@ -32,6 +32,7 @@ public class ServiceAuthenticationFilter extends OncePerRequestFilter {
     private static final String SERVICE_TOKEN_HEADER = "X-Service-Token";
     private static final long MAX_SIGNATURE_AGE_MS = 5000; // 5 seconds
 
+    /* Filter to authenticate requests to internal endpoints */
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -67,7 +68,7 @@ public class ServiceAuthenticationFilter extends OncePerRequestFilter {
      * Validates the JWT signature from another service.
      * Checks:
      * 1. Signature is valid (signed with service.secret)
-     * 2. Signature is not too old (replay attack prevention)
+     * 2. Signature is not too old (prevention)
      */
     private boolean validateSignature(String signature) {
         try {

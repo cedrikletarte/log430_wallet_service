@@ -24,6 +24,7 @@ public class WalletRepositoryAdapter implements WalletRepositoryPort {
         this.walletMapper = walletMapper;
     }
 
+    /* Save a wallet */
     @Override
     public Wallet save(Wallet wallet) {
         WalletEntity entity = walletMapper.toEntity(wallet);
@@ -31,6 +32,7 @@ public class WalletRepositoryAdapter implements WalletRepositoryPort {
         return walletMapper.toDomain(entity);
     }
 
+    /* Save a list of wallets */
     @Override
     public List<Wallet> saveAll(List<Wallet> wallets) {
         List<WalletEntity> entities = wallets.stream()
@@ -42,13 +44,14 @@ public class WalletRepositoryAdapter implements WalletRepositoryPort {
                 .toList();
     }
 
-
+    /* Find a wallet by its ID */
     @Override
     public Optional<Wallet> findById(Long id) {
         return springWalletRepository.findById(id)
                 .map(walletMapper::toDomain);
     }
-
+    
+    /* Find a wallet by user ID */
     @Override
     public Optional<Wallet> findByUserId(Long userId) {
         return springWalletRepository.findByUserId(userId)

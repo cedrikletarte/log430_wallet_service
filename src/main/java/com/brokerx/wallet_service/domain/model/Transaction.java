@@ -9,6 +9,7 @@ import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+/* Represents a transaction within a user's wallet */
 @Data
 @Builder
 @NoArgsConstructor

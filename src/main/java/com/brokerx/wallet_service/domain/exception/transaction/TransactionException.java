@@ -3,7 +3,7 @@ package com.brokerx.wallet_service.domain.exception.transaction;
 import java.math.BigDecimal;
 
 public class TransactionException extends RuntimeException {
-    private final String code; // e.g. TX_INVALID_DATA, TX_UNSUPPORTED_TYPE, TX_INSUFFICIENT_FUNDS
+    private final String code;
     private final String field;
     private final String value;
     private final BigDecimal currentBalance;

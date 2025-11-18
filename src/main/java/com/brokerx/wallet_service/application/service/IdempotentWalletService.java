@@ -12,9 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 
-/**
- * Service implementing idempotent debit/credit for wallet
- */
+/* Service implementing idempotent debit/credit for wallet */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,6 +21,7 @@ public class IdempotentWalletService implements WalletWithIdempotencyUseCase {
     private final WalletUseCase walletUseCase;
     private final IdempotencyCachePort idempotencyCachePort;
 
+    /* Credit wallet with idempotency check */
     @Override
     public TransactionSuccess creditWithIdempotency(Long userId, BigDecimal amount, String idempotencyKey) {
         log.info("Processing credit with idempotency: userId={}, idempotencyKey={}", userId, idempotencyKey);
@@ -43,6 +42,7 @@ public class IdempotentWalletService implements WalletWithIdempotencyUseCase {
         return tx;
     }
 
+    /* Debit wallet with idempotency check */
     @Override
     public TransactionSuccess debitWithIdempotency(Long userId, BigDecimal amount, String idempotencyKey) {
         log.info("Processing debit with idempotency: userId={}, idempotencyKey={}", userId, idempotencyKey);
@@ -62,11 +62,13 @@ public class IdempotentWalletService implements WalletWithIdempotencyUseCase {
         return tx;
     }
 
+    /* Check if a request is duplicate based on idempotency key */
     @Override
     public boolean isDuplicateRequest(String idempotencyKey, Long userId) {
         return idempotencyCachePort.isDuplicate(idempotencyKey, userId);
     }
 
+    /* Get cached response for an idempotency key */
     @Override
     public TransactionSuccess getCachedResponse(String idempotencyKey, Long userId) {
         Object cachedResponse = idempotencyCachePort.getCachedResponse(idempotencyKey, userId);

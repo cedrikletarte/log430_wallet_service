@@ -34,6 +34,7 @@ public class WalletController {
         this.walletWithIdempotencyUseCase = walletWithIdempotencyUseCase;
     }
 
+    /* Retrieve the wallet details of the authenticated user */
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<WalletSuccess>> me(Authentication authentication) {
         String userId = authentication.getPrincipal().toString();
@@ -46,6 +47,7 @@ public class WalletController {
                 walletSuccess));
     }
 
+    /* Retrieve the transactions of the authenticated user */
     @GetMapping("/transactions")
     public ResponseEntity<ApiResponse<List<TransactionSuccess>>> getTransactions(Authentication authentication) {
         String userId = authentication.getPrincipal().toString();
@@ -58,6 +60,7 @@ public class WalletController {
                 transactions));
     }
 
+    /* Retrieve the positions of the authenticated user */
     @GetMapping("/positions")
     public ResponseEntity<ApiResponse<List<PositionSuccess>>> getPositions(Authentication authentication) {
         String userId = authentication.getPrincipal().toString();
@@ -70,7 +73,7 @@ public class WalletController {
                 positions));
     }
 
-
+    /* Credit the wallet of the authenticated user */
     @PostMapping("/credit")
     public ResponseEntity<ApiResponse<Map<String, String>>> credit(@RequestBody WalletOperationRequest payload,
             Authentication authentication) {
@@ -84,6 +87,7 @@ public class WalletController {
                 Map.of("userId", userId, "amount", payload.getAmount().toString())));
     }
 
+    /* Debit the wallet of the authenticated user */
     @PostMapping("/debit")
     public ResponseEntity<ApiResponse<Map<String, String>>> debit(@RequestBody WalletOperationRequest payload,
             Authentication authentication) {
