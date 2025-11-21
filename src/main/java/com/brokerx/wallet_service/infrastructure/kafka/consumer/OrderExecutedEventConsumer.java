@@ -30,44 +30,69 @@ public class OrderExecutedEventConsumer {
     )
     @Transactional
     public void handleOrderExecuted(OrderExecutedEvent event) {
-        log.info("📥 Received OrderExecuted event: orderId={}, walletId={}, side={}, symbol={}, qty={} @ {}, total={}",
-                event.orderId(), event.walletId(), event.side(), event.stockSymbol(),
-                event.quantity(), event.executionPrice(), event.totalAmount());
+        log.info("Received OrderExecuted event: buyOrderId={}, sellOrderId={}, buyerWallet={}, sellerWallet={}, symbol={}, qty={} @ {}",
+                event.buyOrderId(), event.sellOrderId(), event.buyerWalletId(), event.sellerWalletId(),
+                event.stockSymbol(), event.quantity(), event.executionPrice());
 
         try {
-            // Settle the matched order with full details including position updates
+            // Settle buyer's order (debit cash, credit position)
             orderWalletUseCase.settleMatchedOrder(
-                    event.walletId(),
-                    event.side(),
+                    event.buyerWalletId(),
+                    "BUY",
                     event.stockSymbol(),
                     event.quantity(),
                     event.executionPrice(),
                     event.totalAmount(),
-                    event.orderId()
+                    event.buyOrderId()
             );
             
-            log.info("✅ Order settlement completed for orderId {} ({})", 
-                    event.orderId(), event.side());
+            log.info("Buyer wallet settlement completed for orderId {} (wallet={})", 
+                    event.buyOrderId(), event.buyerWalletId());
+
+            // Settle seller's order (credit cash, debit position)
+            orderWalletUseCase.settleMatchedOrder(
+                    event.sellerWalletId(),
+                    "SELL",
+                    event.stockSymbol(),
+                    event.quantity(),
+                    event.executionPrice(),
+                    event.totalAmount(),
+                    event.sellOrderId()
+            );
             
-            // Publish WalletSettled event for Saga Choreography
-            // This ensures wallet is updated BEFORE notification is sent
-            WalletSettledEvent settledEvent = new WalletSettledEvent(
-                    event.orderId(),
-                    event.walletId(),
-                    event.side(),
+            log.info("Seller wallet settlement completed for orderId {} (wallet={})", 
+                    event.sellOrderId(), event.sellerWalletId());
+            
+            // Publish WalletSettled events for both orders
+            WalletSettledEvent buyerSettledEvent = new WalletSettledEvent(
+                    event.buyOrderId(),
+                    event.buyerWalletId(),
+                    "BUY",
                     event.stockSymbol(),
                     event.quantity(),
                     event.executionPrice(),
                     event.totalAmount()
             );
             
-            kafkaTemplate.send(walletSettledTopic, event.stockSymbol(), settledEvent);
-            log.info("📤 Published WalletSettled event for orderId {} to topic {}", 
-                    event.orderId(), walletSettledTopic);
+            WalletSettledEvent sellerSettledEvent = new WalletSettledEvent(
+                    event.sellOrderId(),
+                    event.sellerWalletId(),
+                    "SELL",
+                    event.stockSymbol(),
+                    event.quantity(),
+                    event.executionPrice(),
+                    event.totalAmount()
+            );
+            
+            kafkaTemplate.send(walletSettledTopic, event.stockSymbol(), buyerSettledEvent);
+            kafkaTemplate.send(walletSettledTopic, event.stockSymbol(), sellerSettledEvent);
+            
+            log.info("Published WalletSettled events for orders {} and {} to topic {}", 
+                    event.buyOrderId(), event.sellOrderId(), walletSettledTopic);
             
         } catch (Exception e) {
-            log.error("❌ Failed to process OrderExecuted event for orderId {}: {}",
-                    event.orderId(), e.getMessage(), e);
+            log.error("Failed to process OrderExecuted event for orders {} and {}: {}",
+                    event.buyOrderId(), event.sellOrderId(), e.getMessage(), e);
             throw new RuntimeException("Failed to process OrderExecuted event", e);
         }
     }
